@@ -14,6 +14,7 @@
 4. edit ENV variable ```ALLURE_KEY``` to actual path in ```.env``` file
 
 ### Step for Running Allure Testops
+## IMPORTANT: make sure you have docker-compose version > 2.x
 1. create .env file (You can find example in directory)
 2. run ```docker-compose
 --profile insecure-nginx 
