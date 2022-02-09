@@ -212,7 +212,7 @@ services:
     networks:
       - allure-redis-net
     volumes:
-      - redis-volume
+      - redis-volume:/bitnami/redis/data
     environment:
       TZ: ${TZ}
       REDIS_PASSWORD: ${ALLURE_REDIS_PASS}
