@@ -9,26 +9,41 @@
 
 ### Step for own certificates
 1. copy your Certificate to ```./certs/your-certificate.pem```
-2. copy your Crivate key to ```./certs/your-key.pem```
+2. copy your Private key to ```./certs/your-key.pem```
 3. edit ENV variable ```ALLURE_CERTIFICATE``` to actual path in ```.env``` file
 4. edit ENV variable ```ALLURE_KEY``` to actual path in ```.env``` file
 
 ### Step for Running Allure Testops
 ## IMPORTANT: make sure you have docker-compose version > 2.x
-1. create .env file (You can find example in directory)
-2. run ```docker-compose
---profile insecure-nginx 
---profile postgres 
---profile redis
---profile rabbit
---profile minio-local
-up -d```
+1. Create .env file (You can find example in directory)
+```shell
+cp env-example .env
+```
+then EDIT YOUR values
+2. Run:
+```shell
+export COMPOSE_PROFILES=default,insecure-nginx,postgres,redis,rabbit,minio-local
+docker-compose up -d
+```
+OR
+```shell
+docker-compose \
+    --profile default \
+    --profile insecure-nginx \
+    --profile postgres \
+    --profile redis \
+    --profile rabbit \
+    --profile minio-local \
+    up -d
+```
 
 ## Profiles
 As sometimes we don't need internal dependencies like postgres, redis, rabbit we use profiles to exclude or
 include required module
 
 Profiles:
+#### Default App Auth. Do NOT use default if you use ldap profile
+0. default
 #### If you want to run allure on port 80
 1. insecure-nginx 
 
@@ -53,6 +68,9 @@ Profiles:
 #### If you want to use external S3 storage like AWS S3, Azure S3, Google S3 etc... use this profile. Don't forget
 #### to edit .env variables
 8. minio-proxy
+
+#### Ldap auth. Doesn't work WITH default profile at the SAME TIME
+9. ldap
 
 ## Troubleshooting
 Docker Compose is Non Production kind of deployments, so using it means you assume all risks and take them.
