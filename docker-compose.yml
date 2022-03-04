@@ -11,7 +11,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./configs/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./configs/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - nginx-cache:/var/cache/nginx
     networks:
       - allure-net
@@ -27,7 +27,7 @@ services:
       - "443:443"
       - "9000:9000" # Certbot ACME Challenge
     volumes:
-      - ./configs/nginx.secure.conf:/etc/nginx/nginx.conf:ro
+      - ./configs//nginx/nginx.secure.conf:/etc/nginx/nginx.conf:ro
       - ./certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
       - ${ALLURE_CERTIFICATE}:/etc/ssl/certs/fullchain.pem:ro
       - ${ALLURE_KEY}:/etc/ssl/certs/privkey.pem:ro
@@ -77,6 +77,8 @@ services:
       SPRING_CLOUD_CONSUL_ENABLED: "true"
       SPRING_CLOUD_CONSUL_HOST: ${CONSUL_HOST}
       SPRING_CLOUD_CONSUL_PORT: ${CONSUL_PORT}
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,configprops
+      MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIME-TO-LIVE: 15s
       JAVA_TOOL_OPTIONS: >
         -XX:+UseG1GC
         -XX:+UseStringDeduplication
@@ -116,6 +118,8 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQL9Dialect
       SPRING_JPA_PROPERTIES_HIBERNATE_GLOBALLY_QUOTED_IDENTIFIERS: 'true'
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,configprops
+      MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIME-TO-LIVE: 15s
       JAVA_TOOL_OPTIONS: >
         -XX:+UseG1GC
         -XX:+UseStringDeduplication
@@ -153,7 +157,7 @@ services:
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQL9Dialect
       SPRING_JPA_PROPERTIES_HIBERNATE_GLOBALLY_QUOTED_IDENTIFIERS: 'true'
       ALLURE_LOGIN_PRIMARY: ldap
-      ALLURE_LOGIN_LDAP_ENABLED: true
+      ALLURE_LOGIN_LDAP_ENABLED: 'true'
       ALLURE_LOGIN_LDAP_REFERAL: follow
       ALLURE_LOGIN_LDAP_URL: ${LDAP_URL}
       ALLURE_LOGIN_LDAP_USERDNPATTERNS: ${LDAP_USER_DN_PATTERNS}
@@ -162,13 +166,15 @@ services:
       ALLURE_LOGIN_LDAP_GROUPSEARCHBASE: ${LDAP_GROUP_SEARCH_BASE}
       ALLURE_LOGIN_LDAP_GROUPSEARCHFILTER: ${LDAP_GROUP_SEARCH_FILTER}
       ALLURE_LOGIN_LDAP_GROUPROLEATTRIBUTE: ${LDAP_GROUP_ROLE_ATTRIBUTE}
-      ALLURE_LOGIN_LDAP_SYNCROLES: true
+      ALLURE_LOGIN_LDAP_SYNCROLES: 'true'
       ALLURE_LOGIN_LDAP_UIDATTRIBUTE: ${LDAP_UID_ATTRIBUTE}
       ALLURE_LOGIN_LDAP_GROUPAUTHORITIES_ROLEUSERGROUPS: ${LDAP_MAPPING_ROLE_USERS}
       ALLURE_LOGIN_LDAP_GROUPAUTHORITIES_ROLEADMINGROUPS: ${LDAP_MAPPING_ROLE_ADMINS}
       ALLURE_LOGIN_LDAP_DEFAULTROLE: ${LDAP_DEFAULT_ROLE}
       ALLURE_LOGIN_LDAP_USERDN: ${LDAP_LOGIN_SA}
       ALLURE_LOGIN_LDAP_PASSWORD: ${LDAP_LOGIN_SA_PASS}
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,configprops
+      MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIME-TO-LIVE: 15s
       JAVA_TOOL_OPTIONS: >
         -XX:+UseG1GC
         -XX:+UseStringDeduplication
@@ -219,6 +225,9 @@ services:
       ALLURE_BLOBSTORAGE_S3_REGION: ${ALLURE_S3_REGION}
       ALLURE_BLOBSTORAGE_S3_ACCESSKEY: ${ALLURE_S3_ACCESS_KEY}
       ALLURE_BLOBSTORAGE_S3_SECRETKEY: ${ALLURE_S3_SECRET_KEY}
+      MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED: 'true'
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,configprops
+      MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIME-TO-LIVE: 15s
       JAVA_TOOL_OPTIONS: >
         -XX:+UseG1GC
         -XX:+UseStringDeduplication
@@ -227,7 +236,34 @@ services:
 
   consul:
     restart: always
-    image: consul:1.6
+    image: bitnami/consul
+    environment:
+      CONSUL_BOOTSTRAP_EXPECT: 3
+      CONSUL_CLIENT_LAN_ADDRESS: 0.0.0.0
+      CONSUL_DISABLE_KEYRING_FILE: 'true'
+      CONSUL_RETRY_JOIN_ADDRESS: consul
+    networks:
+      - allure-net
+
+  consul-1:
+    image: bitnami/consul
+    environment:
+      CONSUL_BOOTSTRAP_EXPECT: 3
+      CONSUL_CLIENT_LAN_ADDRESS: 0.0.0.0
+      CONSUL_DISABLE_KEYRING_FILE: 'true'
+      CONSUL_RETRY_JOIN_ADDRESS: consul
+      CONSUL_ENABLE_UI: 'false'
+    networks:
+      - allure-net
+
+  consul-2:
+    image: bitnami/consul
+    environment:
+      CONSUL_BOOTSTRAP_EXPECT: 3
+      CONSUL_CLIENT_LAN_ADDRESS: 0.0.0.0
+      CONSUL_DISABLE_KEYRING_FILE: 'true'
+      CONSUL_RETRY_JOIN_ADDRESS: consul
+      CONSUL_ENABLE_UI: 'false'
     networks:
       - allure-net
 
@@ -300,6 +336,7 @@ services:
     environment:
       MINIO_ROOT_USER: ${ALLURE_S3_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${ALLURE_S3_SECRET_KEY}
+      MINIO_PROMETHEUS_AUTH_TYPE: 'public'
     profiles:
       - minio-local
 
@@ -313,6 +350,7 @@ services:
     environment:
       MINIO_ROOT_USER: ${ALLURE_S3_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${ALLURE_S3_SECRET_KEY}
+      MINIO_PROMETHEUS_AUTH_TYPE: 'public'
       MINIO_CACHE: "on"
       MINIO_CACHE_DRIVES: /minio-cache
       MINIO_CACHE_QUOTA: 70
@@ -355,6 +393,98 @@ services:
     profiles:
       - minio-proxy
 
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./configs/prometheus/:/etc/prometheus/
+      - prometheus:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - allure-net
+      - allure-minio-net
+    profiles:
+      - metrics
+
+  grafana:
+    image: grafana/grafana
+    restart: always
+    user: "472"
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./configs/grafana/provisioning:/etc/grafana/provisioning
+      - grafana:/var/lib/grafana
+    env_file:
+      - ./configs/grafana/config.monitoring
+    networks:
+      - allure-net
+    profiles:
+      - metrics
+
+  report-pg-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter
+    restart: always
+    depends_on:
+      - report-db
+      - prometheus
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${ALLURE_REPORT_DB_USERNAME}:${ALLURE_REPORT_DB_PASS}@report-db:${ALLURE_REPORT_DB_PORT}/${ALLURE_REPORT_DB_NAME}"
+    networks:
+      - allure-net
+      - allure-db-net
+    profiles:
+      - metrics
+
+  uaa-pg-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter
+    restart: always
+    depends_on:
+      - uaa-db
+      - prometheus
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${ALLURE_UAA_DB_USERNAME}:${ALLURE_UAA_DB_PASS}@report-db:${ALLURE_UAA_DB_PORT}/${ALLURE_UAA_DB_NAME}"
+    networks:
+      - allure-net
+      - allure-db-net
+    profiles:
+      - metrics
+
+  node-exporter:
+    image: prom/node-exporter
+    restart: always
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - --collector.filesystem.ignored-mount-points
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+    networks:
+      - allure-net
+    profiles:
+      - metrics
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    restart: always
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - allure-net
+    profiles:
+      - metrics
+
 networks:
   allure-net:
     driver: bridge
@@ -390,3 +520,5 @@ volumes:
   minio-cache:
   uaa-db-volume:
   report-db-volume:
+  prometheus:
+  grafana:

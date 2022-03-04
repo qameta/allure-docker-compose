@@ -1,0 +1,59 @@
+---
+global:
+  scrape_interval: 15s
+  scrape_timeout: 15s
+  external_labels:
+    monitor: 'allure-testops'
+rule_files:
+  - 'alert.rules'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+          - 'localhost:9090'
+  - job_name: 'cadvisor'
+    scrape_interval: 5s
+    dns_sd_configs:
+      - names:
+          - 'tasks.cadvisor'
+        type: A
+        port: 8080
+  - job_name: 'node-exporter'
+    scrape_interval: 5s
+    dns_sd_configs:
+      - names:
+          - 'tasks.node-exporter'
+        type: A
+        port: 9100
+  - job_name: 'pg-db-exporter'
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+          - 'uaa-pg-exporter:9187'
+          - 'report-pg-exporter:9187'
+  - job_name: 'minio-exporter'
+    scrape_interval: 5s
+    metrics_path: /minio/v2/metrics/node
+    scheme: http
+    static_configs:
+      - targets:
+          - 'minio-local:9000'
+  - job_name: 'consul'
+    scrape_interval: 5s
+    metrics_path: /management/prometheus
+    consul_sd_configs:
+      - server: 'consul:8500'
+        scheme: http
+        services:
+          - allure-ee-gateway
+          - allure-ee-uaa
+          - allure-ee-report
+    relabel_configs:
+      - source_labels: ['__meta_consul_service']
+        target_label: service
+      - source_labels:  ['__meta_consul_tags']
+        regex: (.*contextPath=(.*[^(,)]).*)
+        replacement: ${2}/management/prometheus
+        target_label: __metrics_path__

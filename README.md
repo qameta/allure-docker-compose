@@ -71,6 +71,11 @@ Profiles:
 
 #### Ldap auth. Doesn't work WITH default profile at the SAME TIME
 9. ldap
+#### Metrics. Runs with Prometheus Grafana and exporters
+10. metrics
+
+## Metrics
+Make sure you have ./configs/prometheus/prometheus.yml tuned for minio scraping location
 
 ## Troubleshooting
 Docker Compose is Non Production kind of deployments, so using it means you assume all risks and take them.
