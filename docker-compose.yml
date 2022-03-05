@@ -54,16 +54,25 @@ services:
   allure-gateway:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-gateway:${ALLURE_VERSION}
+    entrypoint:
+      - '/entrypoint.sh'
     depends_on:
       - allure-uaa
       - allure-report
     networks:
       - allure-net
-      - allure-redis-net
+    volumes:
+      - ./configs/allure/gateway-entrypoint.sh:/entrypoint.sh:ro
+      - ./configs/consul/allure-gateway.json:/consul/config/allure-gateway.json:ro
+    healthcheck:
+      test: "curl -f http://allure-gateway:${ALLURE_GATEWAY_PORT}/management/health || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 2m
     environment:
       TZ: ${TZ}
       SPRING_PROFILES_ACTIVE: compose
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: "http://allure-uaa:${ALLURE_UAA_PORT}${ALLURE_UAA_CONTEXT_PATH}/.well-known/jwks.json"
       SPRING_OUTPUT_ANSI_ENABLED: never
       ALLURE_JWT_SECRET: ${ALLURE_JWT_SECRET}
       ALLURE_SECURE: ${ALLURE_SECURE_COOKIE}
@@ -93,11 +102,21 @@ services:
   allure-uaa:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-uaa:${ALLURE_VERSION}
+    entrypoint:
+      - '/entrypoint.sh'
     depends_on:
       - consul
     networks:
       - allure-net
-      - allure-db-net
+    volumes:
+      - ./configs/allure/uaa-entrypoint.sh:/entrypoint.sh:ro
+      - ./configs/consul/allure-uaa.json:/consul/config/allure-uaa.json:ro
+    healthcheck:
+      test: "curl -f http://allure-uaa:${ALLURE_UAA_PORT}${ALLURE_UAA_CONTEXT_PATH}/management/health || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 2m
     environment:
       TZ: ${TZ}
       SPRING_PROFILES_ACTIVE: compose
@@ -131,11 +150,21 @@ services:
   allure-uaa-ldap:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-uaa:${ALLURE_VERSION}
+    entrypoint:
+      - '/entrypoint.sh'
     depends_on:
       - consul
     networks:
       - allure-net
-      - allure-db-net
+    volumes:
+      - ./configs/allure/uaa-entrypoint.sh:/entrypoint.sh:ro
+      - ./configs/consul/allure-uaa.json:/consul/config/allure-uaa.json:ro
+    healthcheck:
+      test: "curl -f http://localhost:${ALLURE_UAA_PORT}${ALLURE_UAA_CONTEXT_PATH}/management/health || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 2m
     environment:
       TZ: ${TZ}
       SPRING_PROFILES_ACTIVE: compose
@@ -187,17 +216,24 @@ services:
   allure-report:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-report:${ALLURE_VERSION}
+    entrypoint:
+      - '/entrypoint.sh'
     depends_on:
       - consul
     networks:
       - allure-net
-      - allure-db-net
-      - allure-rabbit-net
-      - allure-minio-net
+    volumes:
+      - ./configs/allure/report-entrypoint.sh:/entrypoint.sh:ro
+      - ./configs/consul/allure-report.json:/consul/config/allure-report.json:ro
+    healthcheck:
+      test: "curl -f http://allure-report:${ALLURE_REPORT_PORT}${ALLURE_REPORT_CONTEXT_PATH}/management/health || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 2m
     environment:
       TZ: ${TZ}
       SPRING_PROFILES_ACTIVE: compose
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: "http://allure-uaa:${ALLURE_UAA_PORT}${ALLURE_UAA_CONTEXT_PATH}/.well-known/jwks.json"
       SPRING_OUTPUT_ANSI_ENABLED: never
       ALLURE_ENDPOINT: ${ALLURE_PROTO}://${ALLURE_HOST}
       ALLURE_CRYPTO_PASSWORD: ${ALLURE_CRYPTO_PASSWORD}
@@ -234,44 +270,41 @@ services:
         -Dsun.jnu.encoding=UTF-8
         -Dfile.encoding=UTF-8
 
-  consul:
+  consul-0:
     restart: always
-    image: bitnami/consul
-    environment:
-      CONSUL_BOOTSTRAP_EXPECT: 3
-      CONSUL_CLIENT_LAN_ADDRESS: 0.0.0.0
-      CONSUL_DISABLE_KEYRING_FILE: 'true'
-      CONSUL_RETRY_JOIN_ADDRESS: consul
+    container_name: consul-0
+    image: hashicorp/consul
     networks:
       - allure-net
+    volumes:
+      - ./configs/consul/consul-0.json:/consul/config/consul-0.json:ro
+    command: "agent -bind '{{ GetInterfaceIP \"eth0\" }}' -bootstrap-expect=3"
 
   consul-1:
-    image: bitnami/consul
-    environment:
-      CONSUL_BOOTSTRAP_EXPECT: 3
-      CONSUL_CLIENT_LAN_ADDRESS: 0.0.0.0
-      CONSUL_DISABLE_KEYRING_FILE: 'true'
-      CONSUL_RETRY_JOIN_ADDRESS: consul
-      CONSUL_ENABLE_UI: 'false'
+    restart: always
+    container_name: consul-1
+    image: hashicorp/consul
     networks:
       - allure-net
+    volumes:
+      - ./configs/consul/consul-1.json:/consul/config/consul-1.json:ro
+    command: "agent -bind '{{ GetInterfaceIP \"eth0\" }}' -bootstrap-expect=3"
 
   consul-2:
-    image: bitnami/consul
-    environment:
-      CONSUL_BOOTSTRAP_EXPECT: 3
-      CONSUL_CLIENT_LAN_ADDRESS: 0.0.0.0
-      CONSUL_DISABLE_KEYRING_FILE: 'true'
-      CONSUL_RETRY_JOIN_ADDRESS: consul
-      CONSUL_ENABLE_UI: 'false'
+    restart: always
+    container_name: consul-2
+    image: hashicorp/consul
     networks:
       - allure-net
+    volumes:
+      - ./configs/consul/consul-2.json:/consul/config/consul-2.json:ro
+    command: "agent -bind '{{ GetInterfaceIP \"eth0\" }}' -bootstrap-expect=3"
 
   uaa-db:
     restart: always
     image: postgres:14
     networks:
-      - allure-db-net
+      - allure-net
     volumes:
       - uaa-db-volume:/var/lib/postgresql/data
     environment:
@@ -286,7 +319,7 @@ services:
     restart: always
     image: postgres:14
     networks:
-      - allure-db-net
+      - allure-net
     volumes:
      - report-db-volume:/var/lib/postgresql/data
     environment:
@@ -301,13 +334,18 @@ services:
     restart: always
     image: bitnami/redis:6.2
     networks:
-      - allure-redis-net
+      - allure-net
     volumes:
       - redis-volume:/bitnami/redis/data
     environment:
       TZ: ${TZ}
       REDIS_PASSWORD: ${ALLURE_REDIS_PASS}
       REDIS_PORT_NUMBER: ${ALLURE_REDIS_PORT}
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 1s
+      timeout: 3s
+      retries: 30
     profiles:
       - redis
 
@@ -315,7 +353,7 @@ services:
     restart: always
     image: bitnami/rabbitmq:3.8
     networks:
-      - allure-rabbit-net
+      - allure-net
     volumes:
       - rabbitmq-volume:/bitnami
     environment:
@@ -330,7 +368,7 @@ services:
     restart: always
     image: bitnami/minio:2022
     networks:
-      - allure-minio-net
+      - allure-net
     volumes:
       - minio-volume:/data
     environment:
@@ -344,7 +382,7 @@ services:
     restart: always
     image: quay.io/minio/minio
     networks:
-      - allure-minio-net
+      - allure-net
     volumes:
       - minio-cache:/minio-cache
     environment:
@@ -369,7 +407,7 @@ services:
     depends_on:
       - minio-local
     networks:
-      - allure-minio-net
+      - allure-net
     entrypoint: "/bin/sh -c"
     command: >
       "mc config host add minio ${ALLURE_S3_MINIO_URL} ${ALLURE_S3_ACCESS_KEY} ${ALLURE_S3_SECRET_KEY} --api S3v4 &&
@@ -384,7 +422,7 @@ services:
     depends_on:
       - minio-proxy
     networks:
-      - allure-minio-net
+      - allure-net
     entrypoint: "/bin/sh -c"
     command: >
       "mc alias set ${ALLURE_S3_PROVIDER} ${ALLURE_S3_MINIO_URL} ${ALLURE_S3_ACCESS_KEY} ${ALLURE_S3_SECRET_KEY} --api S3v4 &&
@@ -405,7 +443,6 @@ services:
       - '--web.console.templates=/usr/share/prometheus/consoles'
     networks:
       - allure-net
-      - allure-minio-net
     profiles:
       - metrics
 
@@ -434,10 +471,9 @@ services:
       - report-db
       - prometheus
     environment:
-      DATA_SOURCE_NAME: "postgresql://${ALLURE_REPORT_DB_USERNAME}:${ALLURE_REPORT_DB_PASS}@report-db:${ALLURE_REPORT_DB_PORT}/${ALLURE_REPORT_DB_NAME}"
+      DATA_SOURCE_NAME: "postgresql://${ALLURE_REPORT_DB_USERNAME}:${ALLURE_REPORT_DB_PASS}@${ALLURE_REPORT_DB_HOST}:${ALLURE_REPORT_DB_PORT}/${ALLURE_REPORT_DB_NAME}?sslmode=disable"
     networks:
       - allure-net
-      - allure-db-net
     profiles:
       - metrics
 
@@ -448,10 +484,9 @@ services:
       - uaa-db
       - prometheus
     environment:
-      DATA_SOURCE_NAME: "postgresql://${ALLURE_UAA_DB_USERNAME}:${ALLURE_UAA_DB_PASS}@report-db:${ALLURE_UAA_DB_PORT}/${ALLURE_UAA_DB_NAME}"
+      DATA_SOURCE_NAME: "postgresql://${ALLURE_UAA_DB_USERNAME}:${ALLURE_UAA_DB_PASS}@${ALLURE_UAA_DB_HOST}:${ALLURE_UAA_DB_PORT}/${ALLURE_UAA_DB_NAME}?sslmode=disable"
     networks:
       - allure-net
-      - allure-db-net
     profiles:
       - metrics
 
@@ -485,32 +520,22 @@ services:
     profiles:
       - metrics
 
+  autoheal:
+    restart: always
+    image: willfarrell/autoheal
+    environment:
+      AUTOHEAL_CONTAINER_LABEL: all
+      AUTOHEAL_INTERVAL: 30
+      AUTOHEAL_START_PERIOD: 60
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
 networks:
   allure-net:
     driver: bridge
     ipam:
       config:
-        - subnet: 192.168.2.0/24
-  allure-db-net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 192.168.3.0/24
-  allure-redis-net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 192.168.4.0/24
-  allure-rabbit-net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 192.168.5.0/24
-  allure-minio-net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 192.168.6.0/24
+        - subnet: 192.168.1.0/24
 
 volumes:
   nginx-cache:
