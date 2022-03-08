@@ -6,6 +6,7 @@ services:
   nginx:
     restart: always
     image: nginx:1.21
+    container_name: nginx
     depends_on:
       - allure-gateway
     ports:
@@ -22,6 +23,7 @@ services:
   nginx-secure:
     restart: always
     image: nginx:1.21-alpine
+    container_name: nginx
     ports:
       - "80:80"
       - "443:443"
@@ -40,6 +42,7 @@ services:
   certbot:
     restart: "no"
     image: certbot/certbot
+    container_name: certbot
     command:
       - certonly -d ${ALLURE_HOST} --http-01-port 9000
     volumes:
@@ -54,6 +57,7 @@ services:
   allure-gateway:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-gateway:${ALLURE_VERSION}
+    container_name: allure-gateway
     entrypoint:
       - '/entrypoint.sh'
     depends_on:
@@ -102,6 +106,7 @@ services:
   allure-uaa:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-uaa:${ALLURE_VERSION}
+    container_name: allure-uaa
     entrypoint:
       - '/entrypoint.sh'
     depends_on:
@@ -150,6 +155,7 @@ services:
   allure-uaa-ldap:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-uaa:${ALLURE_VERSION}
+    container_name: allure-uaa
     entrypoint:
       - '/entrypoint.sh'
     depends_on:
@@ -216,6 +222,7 @@ services:
   allure-report:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-report:${ALLURE_VERSION}
+    container_name: allure-report
     entrypoint:
       - '/entrypoint.sh'
     depends_on:
@@ -303,6 +310,7 @@ services:
   uaa-db:
     restart: always
     image: postgres:14
+    container_name: uaa-db
     networks:
       - allure-net
     volumes:
@@ -318,6 +326,7 @@ services:
   report-db:
     restart: always
     image: postgres:14
+    container_name: report-db
     networks:
       - allure-net
     volumes:
@@ -333,6 +342,7 @@ services:
   redis:
     restart: always
     image: bitnami/redis:6.2
+    container_name: redis
     networks:
       - allure-net
     volumes:
@@ -352,6 +362,7 @@ services:
   rabbitmq:
     restart: always
     image: bitnami/rabbitmq:3.8
+    container_name: rabbit
     networks:
       - allure-net
     volumes:
@@ -367,6 +378,7 @@ services:
   minio-local:
     restart: always
     image: bitnami/minio:2022
+    container_name: minio-local
     networks:
       - allure-net
     volumes:
@@ -381,6 +393,7 @@ services:
   minio-proxy:
     restart: always
     image: quay.io/minio/minio
+    container_name: minio-proxy
     networks:
       - allure-net
     volumes:
@@ -404,6 +417,7 @@ services:
   minio-local-provisioning:
     restart: "no"
     image: minio/mc
+    container_name: minio-provisioning
     depends_on:
       - minio-local
     networks:
@@ -419,6 +433,7 @@ services:
   minio-proxy-provisioning:
     restart: "no"
     image: minio/mc
+    container_name: minio-provisioning
     depends_on:
       - minio-proxy
     networks:
@@ -432,7 +447,9 @@ services:
       - minio-proxy
 
   prometheus:
+    restart: always
     image: prom/prometheus
+    container_name: prometheus
     volumes:
       - ./configs/prometheus/:/etc/prometheus/
       - prometheus:/prometheus
@@ -445,9 +462,12 @@ services:
       - allure-net
     profiles:
       - metrics
+    ports:
+      - "9090:9090"
 
   grafana:
     image: grafana/grafana
+    container_name: grafana
     restart: always
     user: "472"
     depends_on:
@@ -466,9 +486,9 @@ services:
 
   report-pg-exporter:
     image: quay.io/prometheuscommunity/postgres-exporter
+    container_name: report-pg-exporter
     restart: always
     depends_on:
-      - report-db
       - prometheus
     environment:
       DATA_SOURCE_NAME: "postgresql://${ALLURE_REPORT_DB_USERNAME}:${ALLURE_REPORT_DB_PASS}@${ALLURE_REPORT_DB_HOST}:${ALLURE_REPORT_DB_PORT}/${ALLURE_REPORT_DB_NAME}?sslmode=disable"
@@ -479,9 +499,9 @@ services:
 
   uaa-pg-exporter:
     image: quay.io/prometheuscommunity/postgres-exporter
+    container_name: uaa-pg-exporter
     restart: always
     depends_on:
-      - uaa-db
       - prometheus
     environment:
       DATA_SOURCE_NAME: "postgresql://${ALLURE_UAA_DB_USERNAME}:${ALLURE_UAA_DB_PASS}@${ALLURE_UAA_DB_HOST}:${ALLURE_UAA_DB_PORT}/${ALLURE_UAA_DB_NAME}?sslmode=disable"
@@ -490,8 +510,24 @@ services:
     profiles:
       - metrics
 
+  rabbitmq-exporter:
+    image: kbudde/rabbitmq-exporter
+    container_name: rabbitmq-exporter
+    restart: always
+    depends_on:
+      - prometheus
+    networks:
+      - allure-net
+    environment:
+      RABBIT_URL: http://${ALLURE_RABBIT_HOST}:15672
+      RABBIT_USER: ${ALLURE_RABBIT_USER}
+      RABBIT_PASSWORD: ${ALLURE_RABBIT_PASS}
+    profiles:
+      - metrics
+
   node-exporter:
     image: prom/node-exporter
+    container_name: node-exporter
     restart: always
     volumes:
       - /proc:/host/proc:ro
@@ -509,6 +545,7 @@ services:
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor
+    container_name: cadvisor
     restart: always
     volumes:
       - /:/rootfs:ro
@@ -522,6 +559,7 @@ services:
 
   autoheal:
     restart: always
+    container_name: autoheal
     image: willfarrell/autoheal
     environment:
       AUTOHEAL_CONTAINER_LABEL: all

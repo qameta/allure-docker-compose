@@ -40,11 +40,18 @@ scrape_configs:
     static_configs:
       - targets:
           - 'minio-local:9000'
+  - job_name: 'rabbitmq-exporter'
+    scrape_interval: 5s
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets:
+        - 'rabbitmq-exporter:9419'
   - job_name: 'consul'
     scrape_interval: 5s
     metrics_path: /management/prometheus
     consul_sd_configs:
-      - server: 'consul:8500'
+      - server: 'consul-0:8500'
         scheme: http
         services:
           - allure-ee-gateway
