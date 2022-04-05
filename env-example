@@ -17,9 +17,9 @@ ALLURE_CERTIFICATE="./certs/fullchain.pem"
 ALLURE_KEY="./certs/privkey.pem"
 
 # Registry Settings
-ALLURE_REGISTRY=ghcr.io
-ALLURE_SLUG=qameta
-ALLURE_VERSION=3.189.2
+ALLURE_REGISTRY=dl.qameta.io
+ALLURE_SLUG=docker
+ALLURE_VERSION=3.193.0-compose
 
 # External Network Settings
 ALLURE_HOST=allure.io

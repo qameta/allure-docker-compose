@@ -2,57 +2,6 @@ version: "3.9"
 
 services:
 
-  # Http Load Balancer
-  nginx:
-    restart: always
-    image: nginx:1.21
-    container_name: nginx
-    depends_on:
-      - allure-gateway
-    ports:
-      - "80:80"
-    volumes:
-      - ./configs/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - nginx-cache:/var/cache/nginx
-    networks:
-      - allure-net
-    profiles:
-      - insecure-nginx
-
-  # Load Balancer for Allure with SSL Termination
-  nginx-secure:
-    restart: always
-    image: nginx:1.21-alpine
-    container_name: nginx
-    ports:
-      - "80:80"
-      - "443:443"
-      - "9000:9000" # Certbot ACME Challenge
-    volumes:
-      - ./configs//nginx/nginx.secure.conf:/etc/nginx/nginx.conf:ro
-      - ./certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
-      - ${ALLURE_CERTIFICATE}:/etc/ssl/certs/fullchain.pem:ro
-      - ${ALLURE_KEY}:/etc/ssl/certs/privkey.pem:ro
-    networks:
-      - allure-net
-    profiles:
-      - secure-nginx
-
-  # Issue Certificate Free
-  certbot:
-    restart: "no"
-    image: certbot/certbot
-    container_name: certbot
-    command:
-      - certonly -d ${ALLURE_HOST} --http-01-port 9000
-    volumes:
-      - ./certs:/etc/letsencrypt/live/${ALLURE_HOST}
-    networks:
-      - allure-net
-    profiles:
-      - certbot
-      - secure-nginx
-
   # Allure Gateway is Key component of Allure TestOps responsible for routing and auth sessions
   allure-gateway:
     restart: always
@@ -66,14 +15,15 @@ services:
     networks:
       - allure-net
     volumes:
-      - ./configs/allure/gateway-entrypoint.sh:/entrypoint.sh:ro
       - ./configs/consul/allure-gateway.json:/consul/config/allure-gateway.json:ro
+    ports:
+      - "8080:8080"
     healthcheck:
-      test: "curl -f http://allure-gateway:${ALLURE_GATEWAY_PORT}/management/health || exit 1"
+      test: "curl -f http://localhost:${ALLURE_GATEWAY_PORT}/management/health || exit 1"
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 2m
+      retries: 10
+      start_period: 20s
     environment:
       TZ: ${TZ}
       SPRING_PROFILES_ACTIVE: compose
@@ -114,14 +64,13 @@ services:
     networks:
       - allure-net
     volumes:
-      - ./configs/allure/uaa-entrypoint.sh:/entrypoint.sh:ro
       - ./configs/consul/allure-uaa.json:/consul/config/allure-uaa.json:ro
     healthcheck:
-      test: "curl -f http://allure-uaa:${ALLURE_UAA_PORT}${ALLURE_UAA_CONTEXT_PATH}/management/health || exit 1"
+      test: "curl -f http://localhost:${ALLURE_UAA_PORT}${ALLURE_UAA_CONTEXT_PATH}/management/health || exit 1"
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 2m
+      retries: 10
+      start_period: 20s
     environment:
       TZ: ${TZ}
       SPRING_PROFILES_ACTIVE: compose
@@ -163,14 +112,13 @@ services:
     networks:
       - allure-net
     volumes:
-      - ./configs/allure/uaa-entrypoint.sh:/entrypoint.sh:ro
       - ./configs/consul/allure-uaa.json:/consul/config/allure-uaa.json:ro
     healthcheck:
       test: "curl -f http://localhost:${ALLURE_UAA_PORT}${ALLURE_UAA_CONTEXT_PATH}/management/health || exit 1"
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 2m
+      retries: 10
+      start_period: 20s
     environment:
       TZ: ${TZ}
       SPRING_PROFILES_ACTIVE: compose
@@ -230,14 +178,13 @@ services:
     networks:
       - allure-net
     volumes:
-      - ./configs/allure/report-entrypoint.sh:/entrypoint.sh:ro
       - ./configs/consul/allure-report.json:/consul/config/allure-report.json:ro
     healthcheck:
-      test: "curl -f http://allure-report:${ALLURE_REPORT_PORT}${ALLURE_REPORT_CONTEXT_PATH}/management/health || exit 1"
+      test: "curl -f http://localhost:${ALLURE_REPORT_PORT}${ALLURE_REPORT_CONTEXT_PATH}/management/health || exit 1"
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 2m
+      retries: 10
+      start_period: 10s
     environment:
       TZ: ${TZ}
       SPRING_PROFILES_ACTIVE: compose
@@ -387,6 +334,8 @@ services:
       MINIO_ROOT_USER: ${ALLURE_S3_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${ALLURE_S3_SECRET_KEY}
       MINIO_PROMETHEUS_AUTH_TYPE: 'public'
+    ports:
+      - "9000:9000"
     profiles:
       - minio-local
 
@@ -576,7 +525,6 @@ networks:
         - subnet: 192.168.1.0/24
 
 volumes:
-  nginx-cache:
   redis-volume:
   rabbitmq-volume:
   minio-volume:
