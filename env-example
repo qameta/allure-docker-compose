@@ -19,7 +19,7 @@ ALLURE_KEY="./certs/privkey.pem"
 # Registry Settings
 ALLURE_REGISTRY=dl.qameta.io
 ALLURE_SLUG=docker
-ALLURE_VERSION=3.193.0-compose
+ALLURE_VERSION=3.193.1-compose
 
 # External Network Settings
 ALLURE_HOST=allure.io

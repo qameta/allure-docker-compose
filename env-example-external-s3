@@ -17,7 +17,7 @@ ALLURE_KEY="./certs/privkey.pem"
 # Registry Settings
 ALLURE_REGISTRY=ghcr.io
 ALLURE_SLUG=qameta
-ALLURE_VERSION=3.189.2
+ALLURE_VERSION=3.193.1-compose
 
 # External Network Settings
 ALLURE_HOST=allure.io
