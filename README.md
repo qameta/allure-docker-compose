@@ -2,6 +2,18 @@
 
 ### Step for Running Allure Testops
 ## IMPORTANT: make sure you have docker-compose version > 2.x
+How to install Docker Compose v2 (this is not about docker-compose file version like 3.9)
+```bash
+apt update && apt install docker.io
+export DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+mkdir -p $DOCKER_CONFIG/cli-plugins
+curl -SL https://github.com/docker/compose/releases/download/v2.4.1/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+```
+To check you've done everything fine
+```bash
+docker compose version
+```
 1. Create .env file (You can find example in directory)
 ```shell
 cp env-example .env
