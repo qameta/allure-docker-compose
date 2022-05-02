@@ -1,6 +1,0 @@
-{
-  "node_name": "allure-report",
-  "data_dir": "/consul/data",
-  "retry_join": ["consul-0", "consul-1", "consul-1"],
-  "encrypt": "wSVh2oXJenSh1i8H6LKfRbg4jkyosSrO640RCJvj0II="
-}

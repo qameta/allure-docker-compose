@@ -7,17 +7,10 @@ services:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-gateway:${ALLURE_VERSION}
     container_name: allure-gateway
-    entrypoint:
-      - '/entrypoint.sh'
-    depends_on:
-      - allure-uaa
-      - allure-report
     networks:
       - allure-net
-    volumes:
-      - ./configs/consul/allure-gateway.json:/consul/config/allure-gateway.json:ro
     ports:
-      - "8080:8080"
+      - "${ALLURE_GATEWAY_PORT}:${ALLURE_GATEWAY_PORT}"
     healthcheck:
       test: "curl -f http://localhost:${ALLURE_GATEWAY_PORT}/management/health || exit 1"
       interval: 30s
@@ -57,14 +50,8 @@ services:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-uaa:${ALLURE_VERSION}
     container_name: allure-uaa
-    entrypoint:
-      - '/entrypoint.sh'
-    depends_on:
-      - consul
     networks:
       - allure-net
-    volumes:
-      - ./configs/consul/allure-uaa.json:/consul/config/allure-uaa.json:ro
     healthcheck:
       test: "curl -f http://localhost:${ALLURE_UAA_PORT}${ALLURE_UAA_CONTEXT_PATH}/management/health || exit 1"
       interval: 30s
@@ -105,14 +92,8 @@ services:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-uaa:${ALLURE_VERSION}
     container_name: allure-uaa
-    entrypoint:
-      - '/entrypoint.sh'
-    depends_on:
-      - consul
     networks:
       - allure-net
-    volumes:
-      - ./configs/consul/allure-uaa.json:/consul/config/allure-uaa.json:ro
     healthcheck:
       test: "curl -f http://localhost:${ALLURE_UAA_PORT}${ALLURE_UAA_CONTEXT_PATH}/management/health || exit 1"
       interval: 30s
@@ -171,14 +152,8 @@ services:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-report:${ALLURE_VERSION}
     container_name: allure-report
-    entrypoint:
-      - '/entrypoint.sh'
-    depends_on:
-      - consul
     networks:
       - allure-net
-    volumes:
-      - ./configs/consul/allure-report.json:/consul/config/allure-report.json:ro
     healthcheck:
       test: "curl -f http://localhost:${ALLURE_REPORT_PORT}${ALLURE_REPORT_CONTEXT_PATH}/management/health || exit 1"
       interval: 30s
@@ -223,36 +198,6 @@ services:
         -XX:+UseStringDeduplication
         -Dsun.jnu.encoding=UTF-8
         -Dfile.encoding=UTF-8
-
-  consul-0:
-    restart: always
-    container_name: consul-0
-    image: hashicorp/consul
-    networks:
-      - allure-net
-    volumes:
-      - ./configs/consul/consul-0.json:/consul/config/consul-0.json:ro
-    command: "agent -bind '{{ GetInterfaceIP \"eth0\" }}' -bootstrap-expect=3"
-
-  consul-1:
-    restart: always
-    container_name: consul-1
-    image: hashicorp/consul
-    networks:
-      - allure-net
-    volumes:
-      - ./configs/consul/consul-1.json:/consul/config/consul-1.json:ro
-    command: "agent -bind '{{ GetInterfaceIP \"eth0\" }}' -bootstrap-expect=3"
-
-  consul-2:
-    restart: always
-    container_name: consul-2
-    image: hashicorp/consul
-    networks:
-      - allure-net
-    volumes:
-      - ./configs/consul/consul-2.json:/consul/config/consul-2.json:ro
-    command: "agent -bind '{{ GetInterfaceIP \"eth0\" }}' -bootstrap-expect=3"
 
   uaa-db:
     restart: always
