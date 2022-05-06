@@ -1,11 +1,16 @@
+#Allure TestOps release management
+ALLURE_VERSION=3.193.1
+
 TZ="Europe/Moscow"
 # Standard Login Admin
 ALLURE_ADMIN=admin
+#update before going to production
 ALLURE_ADMIN_PASS=admin
 
 # Crypto
-ALLURE_JWT_SECRET=N7zaHAQYQ4XtQTz4vGvqt7Tkyjuesxcp
-ALLURE_CRYPTO_PASSWORD=Ph6HDLPssE6d9hWC
+ALLURE_JWT_SECRET=<SET_YOUR_SECRET_HERE>
+ALLURE_CRYPTO_PASSWORD=<SET_YOUR_PASSWORD_HERE>
+
 
 # Auto adding self signing SSL to JKS
 TLS_ENDPOINTS=ldaps.example.com:636,rabbit.example.com:5672
@@ -19,7 +24,7 @@ ALLURE_KEY="./certs/privkey.pem"
 # Registry Settings
 ALLURE_REGISTRY=dl.qameta.io
 ALLURE_SLUG=docker
-ALLURE_VERSION=3.193.1-compose
+
 
 # External Network Settings
 ALLURE_HOST=allure.io
