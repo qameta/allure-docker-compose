@@ -5,11 +5,12 @@ ALLURE_VERSION=3.193.1
 
 # Standard Login Admin
 ALLURE_ADMIN=admin
+#update before going to production
 ALLURE_ADMIN_PASS=admin
 
 # Crypto
-ALLURE_JWT_SECRET=N7zaHAQYQ4XtQTz4vGvqt7Tkyjuesxcp
-ALLURE_CRYPTO_PASSWORD=Ph6HDLPssE6d9hWC
+ALLURE_JWT_SECRET=<SET_YOUR_SECRET_HERE>
+ALLURE_CRYPTO_PASSWORD=<SET_YOUR_PASSWORD_HERE>
 
 # TLS
 ALLURE_SECURE_COOKIE=false
@@ -64,15 +65,15 @@ ALLURE_RABBIT_USER=allure
 ALLURE_RABBIT_PASS=wNaxbX7wEhqA6ZDQ
 
 # S3
-# This variable is responsive for proxy S3 type (azure - for microsoft Azure, gcs - Google Cloud, s3 - for the rest of providers)
+# This variable is responsible for proxy S3 type (azure - for microsoft Azure, gcs - Google Cloud, s3 - for the rest of providers)
 ALLURE_S3_PROVIDER=s3
 ALLURE_S3_MINIO_URL=http://minio-proxy:9000
-ALLURE_S3_URL=https://fra1.digitaloceanspaces.com
+ALLURE_S3_URL=https://<your_S3_provider_API_endpoint_here>
 ALLURE_S3_BUCKET=allure-testops
 ALLURE_S3_REGION=fra1
 ALLURE_S3_ACCESS_KEY=<your_access_key>
 ALLURE_S3_SECRET_KEY=<your_secret_key>
-# Do not change it, because it's Minio param, not external
+# Do not change it, because it's Minio's parameter, not external S3's
 ALLURE_S3_SECRET_PATHSTYLE=true
 
 RABBIT_ERLANG_COOKIE=fTwP5LxRVjZ9XJkyWmJSKR5hPDWMjkQx
