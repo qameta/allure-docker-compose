@@ -1,5 +1,7 @@
-
 TZ="Europe/Moscow"
+
+#Allure TestOps release management
+ALLURE_VERSION=3.193.1
 
 # Standard Login Admin
 ALLURE_ADMIN=admin
@@ -15,9 +17,8 @@ ALLURE_CERTIFICATE="./certs/fullchain.pem"
 ALLURE_KEY="./certs/privkey.pem"
 
 # Registry Settings
-ALLURE_REGISTRY=ghcr.io
+ALLURE_REGISTRY=dl.qameta.io
 ALLURE_SLUG=qameta
-ALLURE_VERSION=3.193.1-compose
 
 # External Network Settings
 ALLURE_HOST=allure.io
