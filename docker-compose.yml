@@ -5,7 +5,7 @@ services:
   # Allure Gateway is Key component of Allure TestOps responsible for routing and auth sessions
   allure-gateway:
     restart: always
-    image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-gateway:${ALLURE_VERSION}
+    image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-gateway:${ALLURE_VERSION}-compose
     container_name: allure-gateway
     networks:
       - allure-net
@@ -48,7 +48,7 @@ services:
   # Allure UAA is Key component of Allure TestOps responsible for auth
   allure-uaa:
     restart: always
-    image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-uaa:${ALLURE_VERSION}
+    image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-uaa:${ALLURE_VERSION}-compose
     container_name: allure-uaa
     networks:
       - allure-net
@@ -90,7 +90,7 @@ services:
 
   allure-uaa-ldap:
     restart: always
-    image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-uaa:${ALLURE_VERSION}
+    image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-uaa:${ALLURE_VERSION}-compose
     container_name: allure-uaa
     networks:
       - allure-net
@@ -150,7 +150,7 @@ services:
   # Allure UAA is Key component of Allure TestOps responsible for main functional
   allure-report:
     restart: always
-    image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-report:${ALLURE_VERSION}
+    image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-report:${ALLURE_VERSION}-compose
     container_name: allure-report
     networks:
       - allure-net
