@@ -1,17 +1,26 @@
-#Allure TestOps release management
-ALLURE_VERSION=4.0.0
+# Allure TestOps release management
+# You need to update this to install different release – check the release notes
+# Release notes: https://docs.qameta.io/allure-testops/release-notes/
+ALLURE_VERSION=4.0.1
 
-#The port to access Allure TestOps' UI 
+# External Network Settings
+#you need to update these settings
+ALLURE_HOST=allure.io
+ALLURE_PROTO=http
+ALLURE_SESSION_DURATION=57600
 ALLURE_INSTANCE_PORT=8080
 
-TZ="Europe/Moscow"
+# Update this parameter
+TZ="Europe/London"
 # Standard Login Admin
 ALLURE_ADMIN=admin
-#update before going to production
+# Update before going to production
 ALLURE_ADMIN_PASS=admin
 
-# Crypto
+# Crypto parameters
+# generate a secret e.g. like `openssl rand -base64 16` and put the output here
 ALLURE_JWT_SECRET=<SET_YOUR_SECRET_HERE>
+# This is to be set once before deployment and you need to keep this password in a safe place
 ALLURE_CRYPTO_PASSWORD=<SET_YOUR_PASSWORD_HERE>
 
 
@@ -27,12 +36,6 @@ ALLURE_KEY="./certs/privkey.pem"
 # Registry Settings
 ALLURE_REGISTRY=dl.qameta.io
 ALLURE_SLUG=docker
-
-
-# External Network Settings
-ALLURE_HOST=allure.io
-ALLURE_PROTO=http
-ALLURE_SESSION_DURATION=57600
 
 # Service Discovery
 CONSUL_HOST=localhost
@@ -55,7 +58,7 @@ ALLURE_UAA_DB_PASS=CjAXjUav3eh3cmWk
 ALLURE_UAA_PORT=8082
 ALLURE_UAA_DB_PORT=5432
 
-#UAA user registration management
+# UAA user registration management
 ALLURE_REGISTRATION_AUTOAPPROVE=false
 ALLURE_REGISTRATION_ENABLED=false
 ALLURE_REGISTRATION_DEFAULT_ROLE=ROLE_AUDITOR
