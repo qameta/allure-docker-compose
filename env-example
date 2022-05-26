@@ -1,4 +1,4 @@
-
+export COMPOSE_PROFILES=default,postgres,redis,rabbit,minio-local
 
 # Allure TestOps release management
 # Update this to install different release – check the release notes
