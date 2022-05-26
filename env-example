@@ -9,9 +9,10 @@ ALLURE_VERSION=4.0.1
 # you need to update these settings accordingly to your network set up for Allure TestOps
 
 ALLURE_HOST=allure.io
+ALLURE_INSTANCE_PORT=8080
+
 ALLURE_PROTO=http
 ALLURE_SESSION_DURATION=57600
-ALLURE_INSTANCE_PORT=8080
 
 # Update this parameter. It's important for interactions with other systems.
 TZ="Europe/London"
