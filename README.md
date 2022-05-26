@@ -1,74 +1,101 @@
-# Docker Compose Official Deployment
+# Official template for Deployment using Docker Compose
 
-### Step for Running Allure Testops
-## IMPORTANT: make sure you have docker-compose version > 2.x
-How to install Docker Compose v2 (this is not about docker-compose file version like 3.9)
+## Disclaimer
+
+Deployment via docker compose is not suitable for production deployment, so using it means you assume all risks and accept them.
+
+## IMPORTANT NOTICE
+
+**IMPORTANT: make sure you have docker-compose version > 2.x**
+
+### Installing docker compose v.2
+
+Please check [official Docker's installation guide.](https://docs.docker.com/compose/install/)
+
+Basically you need to do the following (current actual release could be different, in the example below we use, so please refer to the official doc mentioned above):
+
 ```bash
 apt update && apt install docker.io
 export DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
 mkdir -p $DOCKER_CONFIG/cli-plugins
-curl -SL https://github.com/docker/compose/releases/download/v2.4.1/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+curl -SL https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
 chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 ```
-To check you've done everything fine
+
+To check you've done everything correctly execute the command:
+
 ```bash
 docker compose version
 ```
-1. Create .env file (You can find example in directory)
+
+IMPORTANT: **docker compose** should be used witрout dashes
+
+## Step for Running Allure TestOps
+
+1. Create .env file by copying our template (env-example)
+
 ```shell
 cp env-example .env
 ```
-then EDIT YOUR values
-2. Run:
+
+2. Edit the values specific for your deployment
+3. Define the list of profiles to be used for the deployment and the start (see description in Profiles section).
+4. Add the list of profiles on top of `.env`
+
+    ```shell
+    export COMPOSE_PROFILES=default,postgres,redis,rabbit,minio-local
+    ```
+
+5. Run the docker compose deployment by executing the command
+
 ```shell
-export COMPOSE_PROFILES=default,postgres,redis,rabbit,minio-local
 docker-compose up -d
-```
-OR
-```shell
-docker-compose \
-    --profile default \
-    --profile postgres \
-    --profile redis \
-    --profile rabbit \
-    --profile minio-local \
-    up -d
 ```
 
 ## Profiles
-As sometimes we don't need internal dependencies like postgres, redis, rabbit we use profiles to exclude or
-include required module
 
-Profiles:
-#### Default App Auth. Do NOT use default if you use ldap profile
+The deployment consists of several services needed to successfully run the business logic.
+
+Sometimes auxiliary services we need are present in your infrastructure and we could reuse them. In this case similar service included into the configuration is not needed and we need exclude appropriate profile from using.
+
+Profiles need to be included in the list of the used profiles only in case the required system is absent in your infrastructure.
+
+A profile defines a service which needs to be included in the configuration to start with Allure TestOps.
+
+Some of profiles are incompatible with each other, so be careful with the configuration.
+
+### Available profiles
+
 0. default
-
-#### If you want to use built in postgres. Don't use it if you have external postgres.
+   - must be disabled if `ldap` profile is used 
 1. postgres
-
-#### If you want to use built in redis. In most cases you don't need to use external because its used only for keeping sessions
+   - Enable this profile if you want to use Postgres database in a container started alongside with Allure TestOps.
+   - Don't enable this profile it if you have dedicated PostgreSQL server.
 2. redis
-
-#### If you want to use built in rabbit.
+   - Enable this profile if you want to use Redis in a container started alongside with Allure TestOps. In vast majority of cases, you don't need to have dedicated Redis server as Redis is used to store sessions information only.
 3. rabbit
-
-#### If you want to use built in minio (Default FS for Allure Artifacts)
+   - Enable this profile if you want to use RabbitMQ in a container started alongside with Allure TestOps.
+   - Don't enable, if there is a dedicated RabbitMQ server in the infrastructure and you are allowed to use it with Allure TestOps.
 4. minio-local
-
-#### If you want to use external S3 storage like AWS S3, Azure S3, Google S3 etc... use this profile. Don't forget
-#### to edit .env variables
+   - Enable this profile if you want to use min.io (S3 solution to use tests' artifacts) in a container started alongside with Allure TestOps.
+   - Don't enable if you have dedicated S3 in your network or you are buying S3 services from a cloud provider (AWS, GCS).
+   - If you have dedicated services, then you need additional configuration for the S3 integration (`.env`).
 5. minio-proxy
-
-#### Ldap auth. Doesn't work WITH default profile at the SAME TIME
+   -  Enable this profile if you want to use min.io as caching proxy before storing files in your S3 solution. It allows you to save some traffic and avoid unnecessary operations with S3.
 6. ldap
-#### Metrics. Runs with Prometheus Grafana and exporters
+   - Enable if you are going to integrate Allure TestOps with your LDAP (AD) and use LDAP authentication. 
+   - This profile must not be enables simultaneously with the `default` profile.
 7. metrics
-
-## Metrics
-Make sure you have ./configs/prometheus/prometheus.yml tuned for minio scraping location
+   - Enable this profile is you are going to collect metrics from Allure TestOps.  
+   - This works with Prometheus, Grafana and exporters.
+   - Make sure you have `./configs/prometheus/prometheus.yml` tuned for minio scraping location.
 
 ## Troubleshooting
-Docker Compose is Non Production kind of deployments, so using it means you assume all risks and take them.
+
+To understand what's wrong with your services, you need to collect log form the running (even if it has failed)
+
+
+
 Here some cases you can deal with problems:
 
 1. Something not working.

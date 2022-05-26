@@ -1,28 +1,33 @@
+
+
 # Allure TestOps release management
-# You need to update this to install different release – check the release notes
+# Update this to install different release – check the release notes
 # Release notes: https://docs.qameta.io/allure-testops/release-notes/
 ALLURE_VERSION=4.0.1
 
 # External Network Settings
-#you need to update these settings
+# you need to update these settings accordingly to your network set up for Allure TestOps
+
 ALLURE_HOST=allure.io
 ALLURE_PROTO=http
 ALLURE_SESSION_DURATION=57600
 ALLURE_INSTANCE_PORT=8080
 
-# Update this parameter
+# Update this parameter. It's important for interactions with other systems.
 TZ="Europe/London"
-# Standard Login Admin
+
+# Standard Admin's Login name. This user allows you restoring the access to Allure TestOps
 ALLURE_ADMIN=admin
-# Update before going to production
+# Update this before deployment
 ALLURE_ADMIN_PASS=admin
 
 # Crypto parameters
-# generate a secret e.g. like `openssl rand -base64 16` and put the output here
+# Update this by generating a secret e.g. like `openssl rand -base64 16` and put the output here
 ALLURE_JWT_SECRET=<SET_YOUR_SECRET_HERE>
-# This is to be set once before deployment and you need to keep this password in a safe place
-ALLURE_CRYPTO_PASSWORD=<SET_YOUR_PASSWORD_HERE>
 
+# Update this. This is to be set once before deployment and you need to keep this password in a safe place.
+# This parameter's value is used to encrypt sensitive data in the database. Losing this will require re-creation of all sensitive data.
+ALLURE_CRYPTO_PASSWORD=<SET_YOUR_PASSWORD_HERE>
 
 # Auto adding self signing SSL to JKS
 TLS_ENDPOINTS=ldaps.example.com:636,rabbit.example.com:5672
