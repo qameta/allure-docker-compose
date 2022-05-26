@@ -92,18 +92,33 @@ Some of profiles are incompatible with each other, so be careful with the config
 
 ## Troubleshooting
 
-To understand what's wrong with your services, you need to collect log form the running (even if it has failed)
+1. To understand what's wrong with your services, you need to collect log form the running (even if it has failed).
+2. To **collect logs** from a right service **you need the name of a such service**
+   - names of all services in the docker compose deployment can be found by executing of command `docker compose ps`
+   - check column **SERVICE**
 
+### Collecting logs
 
+In vast majority of cases the technical support will need the logs for the following services:
 
-Here some cases you can deal with problems:
+- allure-report
+- allure-uaa
+- allure-gateway
 
-1. Something not working.
-Run ```docker-compose logs -f consul```
-#### You may see some healthchecks may not pass. Restart unhealthy service with:
-```docker-compose restart <unhealthy_service>```
+Logs need to be saved as txt files.
 
-2. You cannot add healthchecks in docker-compose.yml because images with allure service doesn't contain curl
-and docker-compose unlike k8s cannot perform native checks
+Generally command to collect logs looks like follows:
 
-3. Sometimes database lock in not removed by allure-report. Plz delete one
+```bash
+docker compose logs service_name
+```
+
+Here is a command which will help you collect all the logs related to Allure TestOps services and save those to separate files:
+
+```bash
+docker compose logs allure-report > report-logs.txt && \
+docker compose logs allure-uaa > uaa-logs.txt && \
+docker compose logs allure-gateway > gateway-logs.txt
+```
+
+These files are to be sent to tech support for the analysis.
