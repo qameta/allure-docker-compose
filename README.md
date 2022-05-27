@@ -12,7 +12,7 @@ Deployment via docker compose is not suitable for production deployment, so usin
 
 Please check [official Docker's installation guide.](https://docs.docker.com/compose/install/)
 
-Basically you need to do the following (current actual release could be different, in the example below we use release 2.5.0, but the most recent one could iffer, so please refer to the official doc mentioned above):
+Basically you need to do the following (in the example below we use release 2.5.0 as an example, but the most recent one could differ from the one we used, so please refer to the official doc mentioned above):
 
 ```bash
 apt update && apt install docker.io
