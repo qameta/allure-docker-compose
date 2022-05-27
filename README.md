@@ -28,7 +28,7 @@ To check you've done everything correctly execute the command:
 docker compose version
 ```
 
-IMPORTANT: **docker compose** should be used witрout dashes
+IMPORTANT: **docker compose** should be used without dashes
 
 ## Step for Running Allure TestOps
 
@@ -56,9 +56,7 @@ docker-compose up -d
 
 The deployment consists of several services needed to successfully run the business logic.
 
-Sometimes auxiliary services we need are present in your infrastructure and we could reuse them. In this case similar service included into the configuration is not needed and we need exclude appropriate profile from using.
-
-Profiles need to be included in the list of the used profiles only in case the required system is absent in your infrastructure.
+Profiles need to be included in the list of the used profiles only in case the required system is absent in your infrastructure or you cannot use existing service with Allure TestOps.
 
 A profile defines a service which needs to be included in the configuration to start with Allure TestOps.
 
