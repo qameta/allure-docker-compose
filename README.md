@@ -30,7 +30,9 @@ docker compose version
 
 IMPORTANT: **docker compose** should be used without dashes
 
-## Step for Running Allure TestOps
+## Steps to get Allure TestOps Up and Running 
+
+Do not update the content of docker-compose.yml unless its is explicitly recommended by our support team.
 
 1. Create .env file by copying our template (env-example)
 
