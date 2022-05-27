@@ -1,19 +1,34 @@
-#Allure TestOps release management
-ALLURE_VERSION=4.0.0
+export COMPOSE_PROFILES=default,postgres,redis,rabbit,minio-local
 
-#The port to access Allure TestOps' UI 
+# Allure TestOps release management
+# Update this to install different release – check the release notes
+# Release notes: https://docs.qameta.io/allure-testops/release-notes/
+ALLURE_VERSION=4.0.1
+
+# External Network Settings
+# you need to update these settings accordingly to your network set up for Allure TestOps
+
+ALLURE_HOST=allure.io
 ALLURE_INSTANCE_PORT=8080
 
-TZ="Europe/Moscow"
-# Standard Login Admin
+ALLURE_PROTO=http
+ALLURE_SESSION_DURATION=57600
+
+# Update this parameter. It's important for interactions with other systems.
+TZ="Europe/London"
+
+# Standard Admin's Login name. This user allows you restoring the access to Allure TestOps
 ALLURE_ADMIN=admin
-#update before going to production
+# Update this before deployment
 ALLURE_ADMIN_PASS=admin
 
-# Crypto
+# Crypto parameters
+# Update this by generating a secret e.g. like `openssl rand -base64 16` and put the output here
 ALLURE_JWT_SECRET=<SET_YOUR_SECRET_HERE>
-ALLURE_CRYPTO_PASSWORD=<SET_YOUR_PASSWORD_HERE>
 
+# Update this. This is to be set once before deployment and you need to keep this password in a safe place.
+# This parameter's value is used to encrypt sensitive data in the database. Losing this will require re-creation of all sensitive data.
+ALLURE_CRYPTO_PASSWORD=<SET_YOUR_PASSWORD_HERE>
 
 # Auto adding self signing SSL to JKS
 TLS_ENDPOINTS=ldaps.example.com:636,rabbit.example.com:5672
@@ -27,12 +42,6 @@ ALLURE_KEY="./certs/privkey.pem"
 # Registry Settings
 ALLURE_REGISTRY=dl.qameta.io
 ALLURE_SLUG=docker
-
-
-# External Network Settings
-ALLURE_HOST=allure.io
-ALLURE_PROTO=http
-ALLURE_SESSION_DURATION=57600
 
 # Service Discovery
 CONSUL_HOST=localhost
@@ -55,7 +64,7 @@ ALLURE_UAA_DB_PASS=CjAXjUav3eh3cmWk
 ALLURE_UAA_PORT=8082
 ALLURE_UAA_DB_PORT=5432
 
-#UAA user registration management
+# UAA user registration management
 ALLURE_REGISTRATION_AUTOAPPROVE=false
 ALLURE_REGISTRATION_ENABLED=false
 ALLURE_REGISTRATION_DEFAULT_ROLE=ROLE_AUDITOR
@@ -93,7 +102,8 @@ ALLURE_RABBIT_PASS=wNaxbX7wEhqA6ZDQ
 # S3
 ALLURE_S3_PROVIDER=s3
 ALLURE_S3_URL=http://minio-local:9000
-ALLURE_S3_MINIO_URL=http://minio-local:9000 # Leave as is
+# Leave as is
+ALLURE_S3_MINIO_URL=http://minio-local:9000 
 ALLURE_S3_BUCKET=allure-testops
 ALLURE_S3_REGION=qameta-0
 ALLURE_S3_ACCESS_KEY=WBuetMuTAMAB4M78NG3gQ4dCFJr3SSmU
