@@ -83,6 +83,7 @@ services:
       SPRING_JPA_PROPERTIES_HIBERNATE_GLOBALLY_QUOTED_IDENTIFIERS: 'true'
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,configprops
       MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIME-TO-LIVE: 15s
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: http://allure-gateway:${ALLURE_GATEWAY_PORT}/.well-known/jwks.json
       JAVA_TOOL_OPTIONS: >
         -XX:+UseG1GC
         -XX:+UseStringDeduplication
@@ -142,6 +143,7 @@ services:
       ALLURE_LOGIN_LDAP_PASSWORD: ${LDAP_LOGIN_SA_PASS}
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,configprops
       MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIME-TO-LIVE: 15s
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: http://allure-gateway:${ALLURE_GATEWAY_PORT}/.well-known/jwks.json
       JAVA_TOOL_OPTIONS: >
         -XX:+UseG1GC
         -XX:+UseStringDeduplication
@@ -196,6 +198,7 @@ services:
       MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED: 'true'
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,configprops
       MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIME-TO-LIVE: 15s
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: http://allure-gateway:${ALLURE_GATEWAY_PORT}/.well-known/jwks.json
       JAVA_TOOL_OPTIONS: >
         -XX:+UseG1GC
         -XX:+UseStringDeduplication
