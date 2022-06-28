@@ -243,8 +243,6 @@ services:
     container_name: redis
     networks:
       - allure-net
-    volumes:
-      - redis-volume:/bitnami/redis/data
     environment:
       TZ: ${TZ}
       REDIS_PASSWORD: ${ALLURE_REDIS_PASS}
@@ -476,7 +474,6 @@ networks:
         - subnet: 192.168.1.0/24
 
 volumes:
-  redis-volume:
   rabbitmq-volume:
   minio-volume:
   minio-cache:
