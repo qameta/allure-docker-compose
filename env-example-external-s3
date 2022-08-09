@@ -1,5 +1,5 @@
 #Allure TestOps release management
-ALLURE_VERSION=4.0.0
+ALLURE_VERSION=4.5.0
 
 #The port to access Allure TestOps' UI 
 ALLURE_INSTANCE_PORT=8080
