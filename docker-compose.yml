@@ -257,7 +257,7 @@ services:
 
   rabbitmq:
     restart: always
-    image: bitnami/rabbitmq:3.8
+    image: bitnami/rabbitmq
     container_name: rabbit
     networks:
       - allure-net
