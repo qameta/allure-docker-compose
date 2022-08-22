@@ -78,9 +78,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://${ALLURE_UAA_DB_HOST}:${ALLURE_UAA_DB_PORT}/${ALLURE_UAA_DB_NAME}?assumeMinServerVersion=11&ApplicationName=${ALLURE_UAA_SERVICE_NAME}
       SPRING_DATASOURCE_USERNAME: ${ALLURE_UAA_DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${ALLURE_UAA_DB_PASS}
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQL9Dialect
-      SPRING_JPA_PROPERTIES_HIBERNATE_GLOBALLY_QUOTED_IDENTIFIERS: 'true'
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,configprops
       MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIME-TO-LIVE: 15s
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: http://allure-gateway:${ALLURE_GATEWAY_PORT}/.well-known/jwks.json
@@ -228,7 +225,7 @@ services:
     networks:
       - allure-net
     volumes:
-     - report-db-volume:/var/lib/postgresql/data
+      - report-db-volume:/var/lib/postgresql/data
     environment:
       TZ: ${TZ}
       POSTGRES_DB: ${ALLURE_REPORT_DB_NAME}
@@ -376,7 +373,7 @@ services:
       - ./configs/grafana/provisioning:/etc/grafana/provisioning
       - grafana:/var/lib/grafana
     env_file:
-      - ./configs/grafana/config.monitoring
+      - configs/grafana/config.monitoring
     networks:
       - allure-net
     profiles:
