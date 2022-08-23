@@ -225,8 +225,6 @@ services:
       "mc alias set ${ALLURE_S3_PROVIDER} ${ALLURE_S3_MINIO_URL} ${ALLURE_S3_ACCESS_KEY} ${ALLURE_S3_SECRET_KEY} --api S3v4 &&
        mc mb --ignore-existing ${ALLURE_S3_PROVIDER}/${ALLURE_S3_BUCKET} &&
        mc admin info ${ALLURE_S3_PROVIDER}"
-    profiles:
-      - minio-proxy
 
 networks:
   allure-net:
