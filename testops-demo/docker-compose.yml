@@ -1,0 +1,260 @@
+version: "3.9"
+
+services:
+
+  # Allure Gateway is Key component of Allure TestOps responsible for routing and auth sessions
+  allure-gateway:
+    restart: always
+    image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-gateway:${ALLURE_VERSION}
+    container_name: allure-gateway
+    networks:
+      - allure-net
+    ports:
+      - "${ALLURE_INSTANCE_PORT}:${ALLURE_GATEWAY_PORT}"
+    healthcheck:
+      test: "curl -f http://localhost:${ALLURE_GATEWAY_PORT}/management/health || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+    environment:
+      TZ: ${TZ}
+      SPRING_PROFILES_ACTIVE: compose
+      SPRING_OUTPUT_ANSI_ENABLED: never
+      ALLURE_JWT_SECRET: ${ALLURE_JWT_SECRET}
+      ALLURE_SECURE: ${ALLURE_SECURE_COOKIE}
+      ALLURE_JWT_ACCESS_TOKEN_VALIDITY_SECONDS: ${ALLURE_SESSION_DURATION}
+      LOGGING_LEVEL_IO_QAMETA_ALLURE: warn
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: warn
+      SPRING_SESSION_STORE_TYPE: REDIS
+      SPRING_REDIS_HOST: ${ALLURE_REDIS_HOST}
+      SPRING_REDIS_PORT: ${ALLURE_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${ALLURE_REDIS_PASS}
+      SPRING_CLOUD_CONSUL_ENABLED: "false"
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-gateway_0_INSTANCE_ID: allure-gateway-0
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-gateway_0_HOST: allure-gateway
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-gateway_0_PORT: ${ALLURE_GATEWAY_PORT}
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-uaa_0_INSTANCE_ID: allure-uaa-0
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-uaa_0_HOST: allure-uaa
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-uaa_0_PORT: ${ALLURE_UAA_PORT}
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-report_0_INSTANCE_ID: allure-report-0
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-report_0_HOST: allure-report
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-report_0_PORT: ${ALLURE_REPORT_PORT}
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,configprops
+      MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIME-TO-LIVE: 15s
+      JAVA_TOOL_OPTIONS: >
+        -XX:+UseG1GC
+        -XX:+UseStringDeduplication
+        -Dsun.jnu.encoding=UTF-8
+        -Dfile.encoding=UTF-8
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10mb"
+
+  # Allure UAA is Key component of Allure TestOps responsible for auth
+  allure-uaa:
+    restart: always
+    image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-uaa:${ALLURE_VERSION}
+    container_name: allure-uaa
+    networks:
+      - allure-net
+    healthcheck:
+      test: "curl -f http://localhost:${ALLURE_UAA_PORT}${ALLURE_UAA_CONTEXT_PATH}/management/health || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+    environment:
+      TZ: ${TZ}
+      SPRING_PROFILES_ACTIVE: compose
+      SPRING_OUTPUT_ANSI_ENABLED: never
+      ALLURE_ENDPOINT: ${ALLURE_PROTO}://${ALLURE_HOST}
+      ALLURE_JWT_SECRET: ${ALLURE_JWT_SECRET}
+      ALLURE_CRYPTO_PASSWORD: ${ALLURE_CRYPTO_PASSWORD}
+      ALLURE_SECURITY_USER_NAME: ${ALLURE_ADMIN}
+      ALLURE_SECURITY_USER_PASSWORD: ${ALLURE_ADMIN_PASS}
+      ALLURE_REGISTRATION_AUTOAPPROVE: ${ALLURE_REGISTRATION_AUTOAPPROVE}
+      ALLURE_REGISTRATION_ENABLED: ${ALLURE_REGISTRATION_ENABLED}
+      ALLURE_REGISTRATION_DEFAULT_ROLE: ${ALLURE_REGISTRATION_DEFAULT_ROLE}
+      LOGGING_LEVEL_IO_QAMETA_ALLURE: warn
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: warn
+      SPRING_CLOUD_CONSUL_ENABLED: "false"
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-gateway_0_INSTANCE_ID: allure-gateway-0
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-gateway_0_HOST: allure-gateway
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-gateway_0_PORT: ${ALLURE_GATEWAY_PORT}
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-uaa_0_INSTANCE_ID: allure-uaa-0
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-uaa_0_HOST: allure-uaa
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-uaa_0_PORT: ${ALLURE_UAA_PORT}
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-report_0_INSTANCE_ID: allure-report-0
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-report_0_HOST: allure-report
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-report_0_PORT: ${ALLURE_REPORT_PORT}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${ALLURE_UAA_DB_HOST}:${ALLURE_UAA_DB_PORT}/${ALLURE_UAA_DB_NAME}?assumeMinServerVersion=11&ApplicationName=${ALLURE_UAA_SERVICE_NAME}
+      SPRING_DATASOURCE_USERNAME: ${ALLURE_UAA_DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${ALLURE_UAA_DB_PASS}
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,configprops
+      MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIME-TO-LIVE: 15s
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: http://allure-gateway:${ALLURE_GATEWAY_PORT}/.well-known/jwks.json
+      JAVA_TOOL_OPTIONS: >
+        -XX:+UseG1GC
+        -XX:+UseStringDeduplication
+        -Dsun.jnu.encoding=UTF-8
+        -Dfile.encoding=UTF-8
+
+  # Allure UAA is Key component of Allure TestOps responsible for main functional
+  allure-report:
+    restart: always
+    image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-report:${ALLURE_VERSION}
+    container_name: allure-report
+    networks:
+      - allure-net
+    healthcheck:
+      test: "curl -f http://localhost:${ALLURE_REPORT_PORT}${ALLURE_REPORT_CONTEXT_PATH}/management/health || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+    environment:
+      TZ: ${TZ}
+      SPRING_PROFILES_ACTIVE: compose
+      SPRING_OUTPUT_ANSI_ENABLED: never
+      ALLURE_ENDPOINT: ${ALLURE_PROTO}://${ALLURE_HOST}
+      ALLURE_CRYPTO_PASSWORD: ${ALLURE_CRYPTO_PASSWORD}
+      LOGGING_LEVEL_IO_QAMETA_ALLURE: warn
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: warn
+      SPRING_CLOUD_CONSUL_ENABLED: "false"
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-gateway_0_INSTANCE_ID: allure-gateway-0
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-gateway_0_HOST: allure-gateway
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-gateway_0_PORT: ${ALLURE_GATEWAY_PORT}
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-uaa_0_INSTANCE_ID: allure-uaa-0
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-uaa_0_HOST: allure-uaa
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-uaa_0_PORT: ${ALLURE_UAA_PORT}
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-report_0_INSTANCE_ID: allure-report-0
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-report_0_HOST: allure-report
+      SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_allure-ee-report_0_PORT: ${ALLURE_REPORT_PORT}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${ALLURE_REPORT_DB_HOST}:${ALLURE_REPORT_DB_PORT}/${ALLURE_REPORT_DB_NAME}?assumeMinServerVersion=11&ApplicationName=${ALLURE_REPORT_SERVICE_NAME}
+      SPRING_DATASOURCE_USERNAME: ${ALLURE_REPORT_DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${ALLURE_REPORT_DB_PASS}
+      SERVER_ERROR_INCLUDE_STACKTRACE: always
+      SPRING_RABBITMQ_HOST: ${ALLURE_RABBIT_HOST}
+      SPRING_RABBITMQ_PORT: ${ALLURE_RABBIT_PORT}
+      SPRING_RABBITMQ_USERNAME: ${ALLURE_RABBIT_USER}
+      SPRING_RABBITMQ_PASSWORD: ${ALLURE_RABBIT_PASS}
+      ALLURE_BLOBSTORAGE_TYPE: S3
+      ALLURE_BLOBSTORAGE_S3_PATHSTYLEACCESS: ${ALLURE_S3_PATHSTYLE}
+      ALLURE_BLOBSTORAGE_S3_ENDPOINT: ${ALLURE_S3_MINIO_URL}
+      ALLURE_BLOBSTORAGE_S3_BUCKET: ${ALLURE_S3_BUCKET}
+      ALLURE_BLOBSTORAGE_S3_REGION: ${ALLURE_S3_REGION}
+      ALLURE_BLOBSTORAGE_S3_ACCESSKEY: ${ALLURE_S3_ACCESS_KEY}
+      ALLURE_BLOBSTORAGE_S3_SECRETKEY: ${ALLURE_S3_SECRET_KEY}
+      MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED: 'true'
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,configprops
+      MANAGEMENT_ENDPOINT_HEALTH_CACHE_TIME-TO-LIVE: 15s
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWKSETURI: http://allure-gateway:${ALLURE_GATEWAY_PORT}/.well-known/jwks.json
+      JAVA_TOOL_OPTIONS: >
+        -XX:+UseG1GC
+        -XX:+UseStringDeduplication
+        -Dsun.jnu.encoding=UTF-8
+        -Dfile.encoding=UTF-8
+
+  uaa-db:
+    restart: always
+    image: postgres:14
+    container_name: uaa-db
+    networks:
+      - allure-net
+    volumes:
+      - uaa-db-volume:/var/lib/postgresql/data
+    environment:
+      TZ: ${TZ}
+      POSTGRES_DB: ${ALLURE_UAA_DB_NAME}
+      POSTGRES_USER: ${ALLURE_UAA_DB_USERNAME}
+      POSTGRES_PASSWORD: ${ALLURE_UAA_DB_PASS}
+
+  report-db:
+    restart: always
+    image: postgres:14
+    container_name: report-db
+    networks:
+      - allure-net
+    volumes:
+      - report-db-volume:/var/lib/postgresql/data
+    environment:
+      TZ: ${TZ}
+      POSTGRES_DB: ${ALLURE_REPORT_DB_NAME}
+      POSTGRES_USER: ${ALLURE_REPORT_DB_USERNAME}
+      POSTGRES_PASSWORD: ${ALLURE_REPORT_DB_PASS}
+
+  redis:
+    restart: always
+    image: bitnami/redis:6.2
+    container_name: redis
+    networks:
+      - allure-net
+    environment:
+      TZ: ${TZ}
+      REDIS_PASSWORD: ${ALLURE_REDIS_PASS}
+      REDIS_PORT_NUMBER: ${ALLURE_REDIS_PORT}
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+
+  rabbitmq:
+    restart: always
+    image: bitnami/rabbitmq
+    container_name: rabbit
+    networks:
+      - allure-net
+    volumes:
+      - rabbitmq-volume:/bitnami
+    environment:
+      RABBITMQ_USERNAME: ${ALLURE_RABBIT_USER}
+      RABBITMQ_PASSWORD: ${ALLURE_RABBIT_PASS}
+      RABBITMQ_ERL_COOKIE: ${RABBIT_ERLANG_COOKIE}
+      RABBITMQ_NODE_PORT_NUMBER: ${ALLURE_RABBIT_PORT}
+
+  minio-local:
+    restart: always
+    image: bitnami/minio:2022
+    container_name: minio-local
+    networks:
+      - allure-net
+    volumes:
+      - minio-volume:/data
+    environment:
+      MINIO_ROOT_USER: ${ALLURE_S3_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${ALLURE_S3_SECRET_KEY}
+      MINIO_PROMETHEUS_AUTH_TYPE: 'public'
+    ports:
+      - "9000:9000"
+
+  minio-local-provisioning:
+    restart: "no"
+    image: minio/mc
+    container_name: minio-provisioning
+    depends_on:
+      - minio-local
+    networks:
+      - allure-net
+    entrypoint: "/bin/sh -c"
+    command: >
+      "mc config host add minio ${ALLURE_S3_MINIO_URL} ${ALLURE_S3_ACCESS_KEY} ${ALLURE_S3_SECRET_KEY} --api S3v4 &&
+      mc mb minio/${ALLURE_S3_BUCKET} --ignore-existing --region ${ALLURE_S3_REGION} &&
+      mc admin info minio"
+    profiles:
+      - minio-local
+
+networks:
+  allure-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
+
+volumes:
+  rabbitmq-volume:
+  minio-volume:
+  uaa-db-volume:
+  report-db-volume:
