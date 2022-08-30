@@ -18,7 +18,7 @@ chmod +x get-docker.sh
 5. ```mkdir -p /opt/allure-testops```
 6. ```cp testops/docker-compose.yml /opt/allure-testops/```
 7. ```cp testops/env-example /opt/allure-testops/.env```
-8. Edit /opt/allure-testops/.env with your favourite text editor.
+8. Edit ```/opt/allure-testops/.env``` with your favourite text editor.
 9. ```cd /opt/allure-testops/```
 10. ```docker compose up -d```
 11. Set your LoadBalancer to proxy traffic to 8080 port (Gateway)
@@ -38,7 +38,7 @@ chmod +x get-docker.sh
 2. ```mkdir -p /opt/allure-testops```
 3. ```cp testops-demo/docker-compose.yml /opt/allure-testops/```
 4. ```cp testops-demo/env-example /opt/allure-testops/.env```
-5. Edit /opt/allure-testops/.env with your favourite text editor.
+5. Edit ```/opt/allure-testops/.env``` with your favourite text editor.
 6. ```cd /opt/allure-testops/```
 7. ```docker compose up -d```
 8. Set your LoadBalancer to proxy traffic to 8080 port (Gateway)
