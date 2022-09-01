@@ -19,6 +19,7 @@ services:
       start_period: 20s
     environment:
       TZ: ${TZ}
+      TLS_ENDPOINTS: ${TLS_ENDPOINTS}
       SPRING_PROFILES_ACTIVE: compose
       SPRING_OUTPUT_ANSI_ENABLED: never
       ALLURE_JWT_SECRET: ${ALLURE_JWT_SECRET}
@@ -74,6 +75,7 @@ services:
       start_period: 20s
     environment:
       TZ: ${TZ}
+      TLS_ENDPOINTS: ${TLS_ENDPOINTS}
       SPRING_PROFILES_ACTIVE: compose
       SPRING_OUTPUT_ANSI_ENABLED: never
       ALLURE_ENDPOINT: ${ALLURE_PROTO}://${ALLURE_HOST}
@@ -125,6 +127,7 @@ services:
       start_period: 10s
     environment:
       TZ: ${TZ}
+      TLS_ENDPOINTS: ${TLS_ENDPOINTS}
       SPRING_PROFILES_ACTIVE: compose
       SPRING_OUTPUT_ANSI_ENABLED: never
       ALLURE_ENDPOINT: ${ALLURE_PROTO}://${ALLURE_HOST}
