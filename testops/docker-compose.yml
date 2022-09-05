@@ -46,6 +46,8 @@ services:
       JAVA_TOOL_OPTIONS: >
         -XX:+UseG1GC
         -XX:+UseStringDeduplication
+        -XX:MinHeapFreeRatio=15
+        -XX:MaxHeapFreeRatio=30
         -Dsun.jnu.encoding=UTF-8
         -Dfile.encoding=UTF-8
     logging:
@@ -100,6 +102,8 @@ services:
       JAVA_TOOL_OPTIONS: >
         -XX:+UseG1GC
         -XX:+UseStringDeduplication
+        -XX:MinHeapFreeRatio=15
+        -XX:MaxHeapFreeRatio=30
         -Dsun.jnu.encoding=UTF-8
         -Dfile.encoding=UTF-8
 
@@ -157,6 +161,8 @@ services:
       JAVA_TOOL_OPTIONS: >
         -XX:+UseG1GC
         -XX:+UseStringDeduplication
+        -XX:MinHeapFreeRatio=15
+        -XX:MaxHeapFreeRatio=30
         -Dsun.jnu.encoding=UTF-8
         -Dfile.encoding=UTF-8
 

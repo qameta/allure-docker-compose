@@ -46,6 +46,7 @@ chmod +x get-docker.sh
 ## Lego Approach
 This may help you to migrate to production grade deployment
 
+- [Metrics](extras/metrics.md)
 - [Databases](extras/Databases.MD)
 - [Minio](extras/minio.md) (Migration Scripts Present)
 - [RabbitMQ](extras/rabbitmq.md)

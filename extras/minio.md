@@ -46,7 +46,7 @@ minio-provisioning:
   image: minio/mc
   container_name: minio-provisioning
   depends_on:
-    - minio
+    - minio-local
   networks:
     - allure-net
   entrypoint: "/bin/sh -c"
