@@ -6,7 +6,7 @@ Old compose repo is deprecated and moved to [Legacy](testops-legacy)
 
 ## For Fresh Production Install
 
-1. Get 2 Postgres (ver > 10) databases for uaa and report (NOT ON THE SAME SERVER with TESTOPS). You can get SAAS Databases from your cloud provider. Amazon AuroraDB is also supported. If you have everything self-hosted, get one from [Official Postgres Vendor](https://www.postgresql.org/download/)
+1. Get 2 Postgres (ver >= 12) databases for uaa and report (NOT ON THE SAME SERVER with TESTOPS). You can get SAAS Databases from your cloud provider. Amazon AuroraDB is also supported. If you have everything self-hosted, get one from [Official Postgres Vendor](https://www.postgresql.org/download/)
 2. Install [RabbitMQ](https://www.rabbitmq.com/download.html) on SEPARATE Server.
 3. Install [Minio](https://docs.min.io/docs/minio-quickstart-guide.html) on SEPARATE Server. (If you have AWS S3 or Ceph, skip this step)
 4. Install Docker:
