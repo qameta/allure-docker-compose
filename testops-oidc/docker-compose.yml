@@ -158,7 +158,7 @@ services:
       SPRING_RABBITMQ_PASSWORD: ${ALLURE_RABBIT_PASS}
       ALLURE_BLOBSTORAGE_TYPE: S3
       ALLURE_BLOBSTORAGE_S3_PATHSTYLEACCESS: ${ALLURE_S3_PATHSTYLE}
-      ALLURE_BLOBSTORAGE_S3_ENDPOINT: ${ALLURE_S3_MINIO_URL}
+      ALLURE_BLOBSTORAGE_S3_ENDPOINT: ${ALLURE_S3_URL}
       ALLURE_BLOBSTORAGE_S3_BUCKET: ${ALLURE_S3_BUCKET}
       ALLURE_BLOBSTORAGE_S3_REGION: ${ALLURE_S3_REGION}
       ALLURE_BLOBSTORAGE_S3_ACCESSKEY: ${ALLURE_S3_ACCESS_KEY}
@@ -213,17 +213,15 @@ services:
     command: >
       "minio gateway ${ALLURE_S3_PROVIDER} ${ALLURE_S3_URL}"
 
-  minio-proxy-provisioning:
+  minio-provisioning:
     restart: "no"
     image: minio/mc
     container_name: minio-provisioning
-    depends_on:
-      - minio-proxy
     networks:
       - allure-net
     entrypoint: "/bin/sh -c"
     command: >
-      "mc alias set ${ALLURE_S3_PROVIDER} ${ALLURE_S3_MINIO_URL} ${ALLURE_S3_ACCESS_KEY} ${ALLURE_S3_SECRET_KEY} --api S3v4 &&
+      "mc alias set ${ALLURE_S3_PROVIDER} ${ALLURE_S3_URL} ${ALLURE_S3_ACCESS_KEY} ${ALLURE_S3_SECRET_KEY} --api S3v4 &&
        mc mb --ignore-existing ${ALLURE_S3_PROVIDER}/${ALLURE_S3_BUCKET} &&
        mc admin info ${ALLURE_S3_PROVIDER}"
 

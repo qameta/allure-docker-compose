@@ -87,7 +87,6 @@ ALLURE_RABBIT_PASS=wNaxbX7wEhqA6ZDQ
 # S3
 # This variable is responsible for proxy S3 type (azure - for microsoft Azure, gcs - Google Cloud, s3 - for the rest of providers)
 ALLURE_S3_PROVIDER=s3
-ALLURE_S3_MINIO_URL=http://minio-proxy:9000
 ALLURE_S3_URL=https://<your_S3_provider_API_endpoint_here>
 ALLURE_S3_BUCKET=allure-testops
 ALLURE_S3_REGION=fra1
