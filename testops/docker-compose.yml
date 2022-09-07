@@ -194,6 +194,17 @@ services:
        mc mb --ignore-existing ${ALLURE_S3_PROVIDER}/${ALLURE_S3_BUCKET} &&
        mc admin info ${ALLURE_S3_PROVIDER}"
 
+  autoheal:
+    restart: always
+    container_name: autoheal
+    image: willfarrell/autoheal
+    environment:
+      AUTOHEAL_CONTAINER_LABEL: all
+      AUTOHEAL_INTERVAL: 30
+      AUTOHEAL_START_PERIOD: 60
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
 networks:
   allure-net:
     driver: bridge
