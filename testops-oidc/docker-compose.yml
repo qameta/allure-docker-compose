@@ -191,28 +191,6 @@ services:
       timeout: 3s
       retries: 30
 
-  minio-proxy:
-    restart: always
-    image: quay.io/minio/minio
-    container_name: minio-proxy
-    networks:
-      - allure-net
-    volumes:
-      - minio-cache:/minio-cache
-    environment:
-      MINIO_ROOT_USER: ${ALLURE_S3_ACCESS_KEY}
-      MINIO_ROOT_PASSWORD: ${ALLURE_S3_SECRET_KEY}
-      MINIO_PROMETHEUS_AUTH_TYPE: 'public'
-      MINIO_CACHE: "on"
-      MINIO_CACHE_DRIVES: /minio-cache
-      MINIO_CACHE_QUOTA: 70
-      MINIO_CACHE_AFTER: 3
-      MINIO_CACHE_WATERMARK_LOW: 30
-      MINIO_CACHE_WATERMARK_HIGH: 75
-    entrypoint: "/bin/sh -c"
-    command: >
-      "minio gateway ${ALLURE_S3_PROVIDER} ${ALLURE_S3_URL}"
-
   minio-provisioning:
     restart: "no"
     image: minio/mc
