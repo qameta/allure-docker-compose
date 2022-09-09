@@ -8,17 +8,15 @@ IT IS NOT RECOMMENDED TO USE RABBITMQ IN DOCKER-COMPOSE ON PRODUCTION DEPLOYMENT
 ---
 rabbitmq:
   restart: always
-  image: bitnami/rabbitmq
+  image: rabbitmq:3.9-management
   container_name: rabbitmq
   networks:
     - allure-net
   volumes:
     - rabbitmq-volume:/bitnami
   environment:
-    RABBITMQ_USERNAME: ${ALLURE_RABBIT_USER}
-    RABBITMQ_PASSWORD: ${ALLURE_RABBIT_PASS}
-    RABBITMQ_NODE_PORT_NUMBER: ${ALLURE_RABBIT_PORT}
-    RABBITMQ_ERL_COOKIE: ${RABBIT_ERLANG_COOKIE}
+    RABBITMQ_DEFAULT_USER: ${ALLURE_RABBIT_USER}
+    RABBITMQ_DEFAULT_PASS: ${ALLURE_RABBIT_PASS}
 
 volumes:
   rabbitmq-volume:
