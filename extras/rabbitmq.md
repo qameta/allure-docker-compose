@@ -13,7 +13,7 @@ rabbitmq:
   networks:
     - allure-net
   volumes:
-    - rabbitmq-volume:/bitnami
+    - rabbitmq-volume:/var/lib/rabbitmq
   environment:
     RABBITMQ_DEFAULT_USER: ${ALLURE_RABBIT_USER}
     RABBITMQ_DEFAULT_PASS: ${ALLURE_RABBIT_PASS}
