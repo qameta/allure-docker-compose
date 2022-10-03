@@ -28,9 +28,9 @@ ALLURE_JWT_SECRET=<SET_YOUR_SECRET_HERE>
 # This parameter's value is used to encrypt sensitive data in the database. Losing this will require re-creation of all sensitive data.
 ALLURE_CRYPTO_PASSWORD=<SET_YOUR_PASSWORD_HERE>
 
-# Auto adding self-signing SSL to JKS. Uncomment if you need to use self-signed certificates and provide real data
-#TLS_ENDPOINTS=ldaps.replace.with.real.data.com:636,rabbit.replace.with.real.data.com:5672
-#TLS_DB_ENDPOINTS=db.replace.with.real.data.com:5432
+# Auto adding self signing SSL to JKS
+## TLS_ENDPOINTS=ldaps.example.com:636,rabbit.example.com:5672
+## TLS_DB_ENDPOINTS=db.example.com:5432
 
 # TLS
 ALLURE_SECURE_COOKIE=false

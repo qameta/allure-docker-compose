@@ -31,8 +31,8 @@ ALLURE_JWT_SECRET=<SET_YOUR_SECRET_HERE>
 ALLURE_CRYPTO_PASSWORD=<SET_YOUR_PASSWORD_HERE>
 
 # Auto adding self signing SSL to JKS
-TLS_ENDPOINTS=ldaps.example.com:636,rabbit.example.com:5672
-TLS_DB_ENDPOINTS=db.example.com:5432
+## TLS_ENDPOINTS=ldaps.example.com:636,rabbit.example.com:5672
+## TLS_DB_ENDPOINTS=db.example.com:5432
 
 # TLS
 ALLURE_SECURE_COOKIE=false
