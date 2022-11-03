@@ -3,6 +3,9 @@ export COMPOSE_PROFILES=default,postgres,redis,rabbit,minio-local
 # Allure TestOps release management
 # Update this to install different release – check the release notes
 # Release notes: https://docs.qameta.io/allure-testops/release-notes/
+
+do not use this  configuration after 4,5.0
+
 ALLURE_VERSION=4.5.0
 
 # External Network Settings

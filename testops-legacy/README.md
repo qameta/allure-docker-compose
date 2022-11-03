@@ -1,5 +1,8 @@
 # Official template for Deployment using Docker Compose
 
+# This config is deprecated, do not use it
+
+
 ## Disclaimer
 
 Deployment via docker compose is not suitable for production deployment, so using it means you assume all risks and accept them.
