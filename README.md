@@ -1,6 +1,6 @@
 # Docker Compose Deployment
 
-Old compose repo is deprecated and moved to [Legacy](testops-legacy)
+Old compose repo is deprecated and moved to [Legacy](testops-legacy) do not use it. Please.
 
 ![schema](extras/compose.png)
 
@@ -10,6 +10,7 @@ Old compose repo is deprecated and moved to [Legacy](testops-legacy)
 2. Install [RabbitMQ](https://www.rabbitmq.com/download.html) on SEPARATE Server.
 3. Install [Minio](https://docs.min.io/docs/minio-quickstart-guide.html) on SEPARATE Server. (If you have AWS S3 or Ceph, skip this step)
 4. Install Docker:
+
 ```shell
 curl -fsSL https://get.docker.com -o get-docker.sh
 chmod +x get-docker.sh
@@ -25,16 +26,19 @@ chmod +x get-docker.sh
 
 If you want TestOps to use SSO, copy testops-{auth} instead on steps 6-7, for example NOT testops but testops-ldap
 For ENV reference please watch [References](extras/env-references.md)
+
 ## For Fresh Demo Install
 
 This Kind of installation is NOT PRODUCTION GRADE. Use it only for testing. In case you lose data, please don't blame us. There is nothing we can do in this case.
 
 1. Install Docker:
+
 ```shell
 curl -fsSL https://get.docker.com -o get-docker.sh
 chmod +x get-docker.sh
 ./get-docker.sh
 ```
+
 2. ```mkdir -p /opt/allure-testops```
 3. ```cp testops-demo/docker-compose.yml /opt/allure-testops/```
 4. ```cp testops-demo/env-example /opt/allure-testops/.env```
@@ -51,3 +55,11 @@ This may help you to migrate to production grade deployment
 - [Minio](extras/minio.md) (Migration Scripts Present)
 - [RabbitMQ](extras/rabbitmq.md)
 
+
+## Release notes
+
+### 2022-11-03 For forthcoming releases we've added ALLURE_JWT_SECRET to allure report, uaa
+
+When using releases after 4.9.2 (excluding it) all the services will require ALLURE_JWT_SECRET to start.
+
+ALLURE_JWT_SECRET should be the same for all the services, i.e. to be set via `.env`
