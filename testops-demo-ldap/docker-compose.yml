@@ -124,7 +124,7 @@ services:
         -Dsun.jnu.encoding=UTF-8
         -Dfile.encoding=UTF-8
 
-  # Allure UAA is Key component of Allure TestOps responsible for main functional
+  # Allure Report is Key component of Allure TestOps responsible for main functional
   allure-report:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-report:${ALLURE_VERSION}
