@@ -58,6 +58,7 @@ ALLURE_UAA_DB_PORT=5432
 # UAA user registration management
 ALLURE_REGISTRATION_AUTOAPPROVE=false
 ALLURE_REGISTRATION_ENABLED=false
+ALLURE_REGISTRATION_DEFAULT_ROLE=ROLE_AUDITOR
 
 # LDAP (Works when profile ldap enabled)
 LDAP_URL=ldap://ldap.example.com:389
