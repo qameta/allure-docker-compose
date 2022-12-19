@@ -88,7 +88,7 @@ Minio Proxy is designed to cache S3 traffic between Allure TestOps and External 
 ```dotenv
 ALLURE_S3_PROVIDER=s3
 # Tells Allure TestOps to connect Proxy
-ALLURE_S3_MINIO_URL=http://minio-proxy:9000
+ALLURE_S3_URL=http://minio-proxy:9000
 ALLURE_S3_URL=https://<your_S3_provider_API_endpoint_here>
 ALLURE_S3_BUCKET=allure-testops
 ALLURE_S3_REGION=fra1
@@ -110,7 +110,7 @@ Makes Sure Bucket Exists
       - allure-net
     entrypoint: "/bin/sh -c"
     command: >
-      "mc alias set ${ALLURE_S3_PROVIDER} ${ALLURE_S3_MINIO_URL} ${ALLURE_S3_ACCESS_KEY} ${ALLURE_S3_SECRET_KEY} --api S3v4 &&
+      "mc alias set ${ALLURE_S3_PROVIDER} ${ALLURE_S3_URL} ${ALLURE_S3_ACCESS_KEY} ${ALLURE_S3_SECRET_KEY} --api S3v4 &&
        mc mb --ignore-existing ${ALLURE_S3_PROVIDER}/${ALLURE_S3_BUCKET} &&
        mc admin info ${ALLURE_S3_PROVIDER}"
 ```

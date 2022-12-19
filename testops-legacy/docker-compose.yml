@@ -1,6 +1,6 @@
 version: "3.9"
 
-do not use this configs
+## do not use this configs
 
 services:
 
@@ -151,7 +151,7 @@ services:
     profiles:
       - ldap
 
-  # Allure UAA is Key component of Allure TestOps responsible for main functional
+  # Allure Report is Key component of Allure TestOps responsible for main functional
   allure-report:
     restart: always
     image: ${ALLURE_REGISTRY}/${ALLURE_SLUG}/allure-report:${ALLURE_VERSION}-compose
