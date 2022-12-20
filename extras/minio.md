@@ -56,67 +56,6 @@ minio-provisioning:
     mc admin info minio"
 ```
 
-## Minio Proxy Service
-Minio Proxy is designed to cache S3 traffic between Allure TestOps and External S3 Provider (NOT MINIO)
-
-```yaml
-  minio-proxy:
-    restart: always
-    image: quay.io/minio/minio
-    container_name: minio-proxy
-    networks:
-      - allure-net
-    volumes:
-      - minio-cache:/minio-cache
-    environment:
-      MINIO_ROOT_USER: ${ALLURE_S3_ACCESS_KEY}
-      MINIO_ROOT_PASSWORD: ${ALLURE_S3_SECRET_KEY}
-      MINIO_PROMETHEUS_AUTH_TYPE: 'public'
-      MINIO_CACHE: "on"
-      MINIO_CACHE_DRIVES: /minio-cache
-      MINIO_CACHE_QUOTA: 70
-      MINIO_CACHE_AFTER: 3
-      MINIO_CACHE_WATERMARK_LOW: 30
-      MINIO_CACHE_WATERMARK_HIGH: 75
-    entrypoint: "/bin/sh -c"
-    command: >
-      "minio gateway ${ALLURE_S3_PROVIDER} ${ALLURE_S3_URL}"
-```
-
-### .env
-
-```dotenv
-ALLURE_S3_PROVIDER=s3
-# Tells Allure TestOps to connect Proxy
-ALLURE_S3_URL=http://minio-proxy:9000
-ALLURE_S3_URL=https://<your_S3_provider_API_endpoint_here>
-ALLURE_S3_BUCKET=allure-testops
-ALLURE_S3_REGION=fra1
-ALLURE_S3_ACCESS_KEY=<your_access_key>
-ALLURE_S3_SECRET_KEY=<your_secret_key>
-ALLURE_S3_PATHSTYLE=true
-```
-
-## Minio Proxy Provisioning Job
-Makes Sure Bucket Exists
-```yaml
-  minio-proxy-provisioning:
-    restart: "no"
-    image: minio/mc
-    container_name: minio-provisioning
-    depends_on:
-      - minio-proxy
-    networks:
-      - allure-net
-    entrypoint: "/bin/sh -c"
-    command: >
-      "mc alias set ${ALLURE_S3_PROVIDER} ${ALLURE_S3_URL} ${ALLURE_S3_ACCESS_KEY} ${ALLURE_S3_SECRET_KEY} --api S3v4 &&
-       mc mb --ignore-existing ${ALLURE_S3_PROVIDER}/${ALLURE_S3_BUCKET} &&
-       mc admin info ${ALLURE_S3_PROVIDER}"
-```
-
-Envs are reused from Minio Proxy
-
 ## Minio Migration Job
 
 This job is handy if you want to migrate from Local Minio to External Minio or Other
