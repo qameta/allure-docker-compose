@@ -73,7 +73,7 @@ LDAP_MAPPING_ROLE_USERS=allure-users
 LDAP_MAPPING_ROLE_ADMINS=allure-admins
 # Default role, can be ROLE_AUDITOR/ROLE_USER/ROLE_ADMIN
 LDAP_DEFAULT_ROLE=ROLE_AUDITOR
-LDAP_LOGIN_SA=svc_allure
+LDAP_LOGIN_SA='cn=admin,dc=example,dc=com'
 LDAP_LOGIN_SA_PASS=$ecretPa$$w0rd
 
 # Report
