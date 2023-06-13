@@ -58,6 +58,11 @@ This may help you to migrate to production grade deployment
 
 ## Release notes
 
+### 2023-06-13 We have added SMTP integration parameters for password reset functionality.
+
+To enable Allure TestOps to send email notifications for password reset, you need to add environment variables to the UAA service settings.
+The environment variables for SMTP configuration in Allure TestOps are named with the prefix "SPRING_MAIL_".
+
 ### 2022-11-03 For forthcoming releases we've added ALLURE_JWT_SECRET to allure report, uaa
 
 When using releases after 4.9.2 (excluding it) all the services will require ALLURE_JWT_SECRET to start.
