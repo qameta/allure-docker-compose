@@ -60,7 +60,7 @@ ALLURE_REGISTRATION_AUTOAPPROVE=false
 ALLURE_REGISTRATION_ENABLED=false
 ALLURE_REGISTRATION_DEFAULT_ROLE=ROLE_AUDITOR
 
-# UAA Integration with SMTP for passwords reset procedures
+# UAA Integration with SMTP for adding of new members to Allure Testops and password reset
 ALLURE_MAIL_HOST=smtp.gmail.com
 ALLURE_MAIL_PORT=465
 ALLURE_MAIL_USERNAME=username
