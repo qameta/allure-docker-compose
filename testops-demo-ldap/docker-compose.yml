@@ -265,9 +265,9 @@ services:
       - allure-net
     entrypoint: "/bin/sh -c"
     command: >
-      "mc config host add minio ${ALLURE_S3_URL} ${ALLURE_S3_ACCESS_KEY} ${ALLURE_S3_SECRET_KEY} --api S3v4 &&
-      mc mb minio/${ALLURE_S3_BUCKET} --ignore-existing --region ${ALLURE_S3_REGION} &&
-      mc admin info minio"
+      "mc config host add ${ALLURE_S3_PROVIDER} ${ALLURE_S3_URL} ${ALLURE_S3_ACCESS_KEY} ${ALLURE_S3_SECRET_KEY} --api S3v4 &&
+      mc mb ${ALLURE_S3_PROVIDER}/${ALLURE_S3_BUCKET} --ignore-existing --region ${ALLURE_S3_REGION} &&
+      mc admin info ${ALLURE_S3_PROVIDER}"
 
 networks:
   allure-net:
