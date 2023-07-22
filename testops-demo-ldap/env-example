@@ -83,6 +83,12 @@ LDAP_DEFAULT_ROLE=ROLE_AUDITOR
 LDAP_LOGIN_SA=svc_allure
 LDAP_LOGIN_SA_PASS=SecretPa$$w0rd
 
+# 2023-07-22 
+LDAP_LOWERCASEUSERNAMES=true
+# this one is disabled in docker-compose.yml by default, use only if your password attribute has a custom name
+#LDAP_PASSWORDATTRIBUTE=password
+
+
 # Report
 ALLURE_REPORT_SERVICE_NAME=allure-report-service
 ALLURE_REPORT_CONTEXT_PATH=/rs
