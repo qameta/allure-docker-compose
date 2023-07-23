@@ -54,6 +54,8 @@ ALLURE_UAA_DB_USERNAME=uaa
 ALLURE_UAA_DB_PASS=CjAXjUav3eh3cmWk
 ALLURE_UAA_PORT=8082
 ALLURE_UAA_DB_PORT=5432
+# do not change this parameter without consulting to the support
+ALLURE_UAA_DB_MAXIMUMPOOLSIZE=7
 
 # UAA user registration management
 ALLURE_REGISTRATION_AUTOAPPROVE=false
@@ -86,6 +88,13 @@ ALLURE_RABBIT_PORT=5672
 ALLURE_RABBIT_USER=allure
 ALLURE_RABBIT_PASS=wNaxbX7wEhqA6ZDQ
 
+# do not change these parameters without consulting to the support
+ALLURE_REPORT_DB_MAXIMUMPOOLSIZE=10
+ALLURE_REPORT_DB_CONNECTIONTIMEOUT=60000
+ALLURE_RABBIT_MAXCONCURRENCY=5
+ALLURE_RABBIT_PARSE_CONSUMERSPERQUEUE=10
+ALLURE_RABBIT_STORE_CONSUMERSPERQUEUE=2
+
 # S3
 # This variable is responsible for proxy S3 type (azure - for microsoft Azure, gcs - Google Cloud, s3 - for the rest of providers)
 ALLURE_S3_PROVIDER=s3
@@ -96,5 +105,10 @@ ALLURE_S3_ACCESS_KEY=<your_access_key>
 ALLURE_S3_SECRET_KEY=<your_secret_key>
 # Do not change it, because it's Minio's parameter, not external S3's
 ALLURE_S3_PATHSTYLE=true
+
+# do not change these parameters without consulting to the support
+ALLURE_S3_MAXCONCURRENCY=200
+ALLURE_SCHEDULER_CLEANER_BLOB_BATCHSIZE=1000
+ALLURE_TASKEXECUTOR_COREPOOLSIZE=200
 
 RABBIT_ERLANG_COOKIE=fTwP5LxRVjZ9XJkyWmJSKR5hPDWMjkQx
