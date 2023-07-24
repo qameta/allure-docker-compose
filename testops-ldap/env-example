@@ -68,6 +68,9 @@ LDAP_USER_SEARCH_BASE='dc=example,dc=com'
 LDAP_USER_SEARCH_FILTER='(&((objectClass=Person))(sAMAccountName={0}))'
 LDAP_GROUP_SEARCH_BASE='ou=qa,ou=Security Groups,dc=example,dc=com'
 LDAP_GROUP_SEARCH_FILTER='(&(objectClass=Group)(member={0}))'
+
+
+LDAP_SYNC_ROLES=true
 LDAP_GROUP_ROLE_ATTRIBUTE=cn
 LDAP_UID_ATTRIBUTE=sAMAccountName
 LDAP_MAPPING_ROLE_USERS=allure-users
