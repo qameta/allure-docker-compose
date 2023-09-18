@@ -1,7 +1,10 @@
 # Allure TestOps release management
 # Update this to install different release – check the release notes
 # Release notes: https://docs.qameta.io/allure-testops/release-notes/
-ALLURE_VERSION=4.18.0
+
+# in release 4.21.0 ROLE_AUDITOR  was updated to ROLE_GUEST
+
+ALLURE_VERSION=4.21.0
 
 # External Network Settings
 # you need to update these settings accordingly to your network set up for Allure TestOps
@@ -61,7 +64,10 @@ ALLURE_UAA_DB_MAXIMUMPOOLSIZE=7
 # UAA user registration management
 ALLURE_REGISTRATION_AUTOAPPROVE=false
 ALLURE_REGISTRATION_ENABLED=false
-ALLURE_REGISTRATION_DEFAULT_ROLE=ROLE_AUDITOR
+# for releases before 4.21.0 
+# ALLURE_REGISTRATION_DEFAULT_ROLE=ROLE_AUDITOR
+# for 4.21.0 and further releases
+ALLURE_REGISTRATION_DEFAULT_ROLE=ROLE_GUEST
 
 # UAA Integration with SMTP for adding of new members to Allure Testops and password reset
 ALLURE_MAIL_HOST=smtp.gmail.com
