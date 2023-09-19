@@ -1,7 +1,10 @@
 # Allure TestOps release management
 # Update this to install different release – check the release notes
 # Release notes: https://docs.qameta.io/allure-testops/release-notes/
-ALLURE_VERSION=4.18.0
+
+# in release 4.21.0 ROLE_AUDITOR  was updated to ROLE_GUEST
+
+ALLURE_VERSION=4.21.0
 
 # External Network Settings
 # you need to update these settings accordingly to your network set up for Allure TestOps
@@ -61,7 +64,12 @@ ALLURE_UAA_DB_MAXIMUMPOOLSIZE=7
 # UAA user registration management
 ALLURE_REGISTRATION_AUTOAPPROVE=false
 ALLURE_REGISTRATION_ENABLED=false
-ALLURE_REGISTRATION_DEFAULT_ROLE=ROLE_AUDITOR
+
+# for releases before 4.21.0 
+# ALLURE_REGISTRATION_DEFAULT_ROLE=ROLE_AUDITOR
+
+# for 4.21.0 and further releases
+ALLURE_REGISTRATION_DEFAULT_ROLE=ROLE_GUEST
 
 # LDAP (Works when profile ldap enabled)
 LDAP_URL=ldap://ldap.example.com:389
@@ -81,8 +89,8 @@ LDAP_GROUP_ROLE_ATTRIBUTE=cn
 LDAP_UID_ATTRIBUTE=sAMAccountName
 LDAP_MAPPING_ROLE_USERS=allure-users
 LDAP_MAPPING_ROLE_ADMINS=allure-admins
-# Default role, can be ROLE_AUDITOR/ROLE_USER/ROLE_ADMIN
-LDAP_DEFAULT_ROLE=ROLE_AUDITOR
+# Default role, can be ROLE_GUEST/ROLE_USER/ROLE_ADMIN
+LDAP_DEFAULT_ROLE=ROLE_GUEST
 LDAP_LOGIN_SA=svc_allure
 LDAP_LOGIN_SA_PASS=SecretPa$$w0rd
 
