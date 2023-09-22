@@ -215,18 +215,6 @@ services:
       timeout: 3s
       retries: 30
 
-  minio-provisioning:
-    restart: "no"
-    image: minio/mc
-    container_name: minio-provisioning
-    networks:
-      - allure-net
-    entrypoint: "/bin/sh -c"
-    command: >
-      "mc alias set ${ALLURE_S3_PROVIDER} ${ALLURE_S3_URL} ${ALLURE_S3_ACCESS_KEY} ${ALLURE_S3_SECRET_KEY} --api S3v4 &&
-       mc mb --ignore-existing ${ALLURE_S3_PROVIDER}/${ALLURE_S3_BUCKET} &&
-       mc admin info ${ALLURE_S3_PROVIDER}"
-
   autoheal:
     restart: always
     container_name: autoheal
