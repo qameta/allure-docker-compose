@@ -1,3 +1,6 @@
+# this configuration cannot be used in a production environment
+# for production pleae use this one https://github.com/qameta/allure-docker-compose/tree/master/testops
+# see https://docs.qameta.io/allure-testops/setup/architecture/#deployment-diagram
 # Allure TestOps release management
 # Update this to install different release – check the release notes
 # Release notes: https://docs.qameta.io/allure-testops/release-notes/
