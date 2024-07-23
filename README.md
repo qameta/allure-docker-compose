@@ -1,3 +1,4 @@
+# This repository is OUTDATED and mustn't be used for the deployment of Allure TestOps
 # Docker Compose Deployment
 
 Old compose repo is deprecated and moved to [Legacy](testops-legacy) do not use it. Please.
