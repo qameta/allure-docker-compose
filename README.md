@@ -1,6 +1,6 @@
 # This repository is OUTDATED and mustn't be used for the deployment of Allure TestOps
 
-[Use this repo instead](https://github.com/qameta/testops-deploy-docker-compose)
+[Use documentation pages instead](https://docs.qameta.io/allure-testops/install/docker-compose/)
 
 # Docker Compose Deployment
 
